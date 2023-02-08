@@ -4,10 +4,10 @@ import { Text } from 'react-native';
 import { Screens } from '@navigation/constants';
 import { AuthStackParams } from '@navigation/stacks/AuthStack';
 
-const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = props => {
+const VerificationScreen: React.FC<
+    NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.VERIFICATION>
+> = props => {
     const { navigation } = props;
-
-    //navigation.navigate(Screens.Auth.SIGN_IN);
 
     return (
         <>
@@ -16,4 +16,4 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
     );
 };
 
-export default SignInScreen;
+export default VerificationScreen;

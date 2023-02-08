@@ -7,5 +7,15 @@ export const Stacks = {
 export const Screens = {
     Auth: {
         SIGN_IN: 'SCREEN_SIGN_IN' as const,
+        VERIFICATION: 'SCREEN_VERIFICATION' as const,
+    },
+    Main: {
+        MAIN: 'SCREEN_MAIN' as const,
+        STORY: 'SCREEN_STORY' as const,
+    },
+    Profile: {
+        PROFILE: 'SCREEN_PROFILE' as const,
+        SETTINGS: 'SCREEN_SETTINGS' as const,
+        QUOTES: 'SCREEN_QUOTES' as const,
     },
 };

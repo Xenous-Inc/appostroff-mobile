@@ -2,12 +2,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { Text } from 'react-native';
 import { Screens } from '@navigation/constants';
-import { AuthStackParams } from '@navigation/stacks/AuthStack';
+import { MainStackParams } from '@navigation/stacks/MainStack';
 
-const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = props => {
+const MainScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Screens.Main.MAIN>> = props => {
     const { navigation } = props;
-
-    //navigation.navigate(Screens.Auth.SIGN_IN);
 
     return (
         <>
@@ -16,4 +14,4 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
     );
 };
 
-export default SignInScreen;
+export default MainScreen;

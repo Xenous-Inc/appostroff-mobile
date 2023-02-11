@@ -12,7 +12,7 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
     const { navigation } = props;
 
     const header = 'Авторизация';
-    const instruction = 'Выберите пожалуйста код страны и затем введите свой номер телефона';
+    const instruction = 'Выберите пожалуйста код страны \nи затем введите свой номер телефона';
     const phoneIndex = '+7';
     const placeHolder = 'Номер телефона';
     const buttonTextNext = 'Продолжить';
@@ -45,7 +45,13 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
                 </View>
             </View>
             <View style={styles.wrapper__pooling_container}>
-                <Button title={buttonTextNext} mode={Button.Mode.Contained} />
+                <Button
+                    title={buttonTextNext}
+                    mode={Button.Mode.Contained}
+                    onPress={() => {
+                        navigation.navigate('SCREEN_VERIFICATION');
+                    }}
+                />
                 <Button title={buttonTextNextGuest} />
             </View>
         </View>
@@ -71,7 +77,6 @@ const styles = StyleSheet.create({
         fontSize: sizes.TEXT_LITTLE,
         fontFamily: 'RFDewi_Regular',
         color: colors.TEXT_INSTRUCTION,
-        width: 280,
     },
     wrapper__phone_input: {
         height: 48,

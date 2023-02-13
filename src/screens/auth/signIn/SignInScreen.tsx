@@ -5,33 +5,25 @@ import { Screens } from '@navigation/constants';
 import { AuthStackParams } from '@navigation/stacks/AuthStack';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
-import Index from '@components/molecules/DropDown';
+import Dropdown from '@components/molecules/Dropdown';
 import Button from '@components/atoms/Button';
+import constants from '@utils/constants';
 
-const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = props => {
-    const { navigation } = props;
-
-    const header = 'Авторизация';
-    const instruction = 'Выберите пожалуйста код страны и затем введите свой номер телефона';
-    const phoneIndex = '+7';
-    const placeHolder = 'Номер телефона';
-    const buttonTextNext = 'Продолжить';
-    const buttonTextNextGuest = 'Продолжить как гость';
-
+const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = () => {
     const [number, onChangeNumber] = React.useState('');
 
     return (
         <View style={styles.wrapper}>
             <View style={styles.wrapper__pooling_container}>
-                <Text style={styles.wrapper__header}>{header}</Text>
-                <Text style={styles.wrapper__text_instruction}>{instruction}</Text>
-                <Index />
+                <Text style={styles.wrapper__header}>{constants.header}</Text>
+                <Text style={styles.wrapper__text_instruction}>{constants.instruction}</Text>
+                <Dropdown />
                 <View style={styles.wrapper__phone_input}>
-                    <Text style={styles.phone_input__text}>{phoneIndex}</Text>
+                    <Text style={styles.phone_input__text}>{constants.phoneIndex}</Text>
                     <View style={styles.phone_input__separator} />
                     <TextInput
                         style={styles.phone_input__input}
-                        placeholder={placeHolder}
+                        placeholder={constants.placeHolder}
                         maxLength={10}
                         keyboardType='numeric'
                         onChangeText={prop => {
@@ -45,8 +37,8 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
                 </View>
             </View>
             <View style={styles.wrapper__pooling_container}>
-                <Button title={buttonTextNext} mode={Button.Mode.Contained} />
-                <Button title={buttonTextNextGuest} />
+                <Button title={constants.buttonTextNext} mode={Button.Mode.Contained} />
+                <Button title={constants.buttonTextNextGuest} />
             </View>
         </View>
     );

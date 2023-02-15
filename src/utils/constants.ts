@@ -19,4 +19,9 @@ export default {
     placeHolder: 'Номер телефона',
     buttonTextNext: 'Продолжить',
     buttonTextNextGuest: 'Продолжить как гость',
+    headerVerification: 'Введите Код',
+    instructionVerification: 'Мы отправили одноразовый код \nна ваш телефон',
+    buttonTextContinue: 'Продолжить',
+    buttonTextRetry: 'Выслать повторно',
+    cellCount: 5,
 };

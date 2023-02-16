@@ -38,6 +38,7 @@ const Button: React.FC<IButton> & { Mode: typeof Mode } = props => {
     } = props;
 
     const isPressed = useSharedValue(false);
+
     const inactiveBackgroundColor = useMemo<string>(
         () => setAlpha(backgroundColor, mode === Mode.Blank ? 0 : 1),
         [mode, backgroundColor],
@@ -54,32 +55,32 @@ const Button: React.FC<IButton> & { Mode: typeof Mode } = props => {
     }));
 
     return (
-        <Animated.View
+        <Pressable
             style={[
                 styles.wrapper,
-                containerStyle,
-                styles.wrapper_property_padding,
-                disabled && styles.wrapper_state_disabled,
-                { borderColor },
-                animatedStyle,
+                // todo: merge and apply incoming paddings
+                !!StyleSheet.flatten(containerStyle)?.width && { width: '100%' },
+                !!StyleSheet.flatten(containerStyle)?.height && { height: '100%' },
             ]}
+            onPress={onPress ?? onPress}
+            onLongPress={onLongPress ?? onLongPress}
+            onPressIn={() => {
+                isPressed.value = true;
+            }}
+            onPressOut={() => {
+                isPressed.value = false;
+            }}
+            disabled={disabled}
         >
-            <Pressable
+            <Animated.View
                 style={[
                     styles.wrapper__content,
-                    // todo: merge and apply incoming paddings
-                    !!StyleSheet.flatten(containerStyle)?.width && { width: '100%' },
-                    !!StyleSheet.flatten(containerStyle)?.height && { height: '100%' },
+                    containerStyle,
+                    styles.wrapper_property_padding,
+                    disabled && styles.wrapper_state_disabled,
+                    { borderColor },
+                    animatedStyle,
                 ]}
-                onPress={onPress ?? onPress}
-                onLongPress={onLongPress ?? onLongPress}
-                onPressIn={() => {
-                    isPressed.value = true;
-                }}
-                onPressOut={() => {
-                    isPressed.value = false;
-                }}
-                disabled={disabled}
             >
                 <Text
                     style={[
@@ -98,20 +99,17 @@ const Button: React.FC<IButton> & { Mode: typeof Mode } = props => {
                 >
                     {title}
                 </Text>
-            </Pressable>
-        </Animated.View>
+            </Animated.View>
+        </Pressable>
     );
 };
 Button.Mode = Mode;
 
 const styles = StyleSheet.create({
     wrapper: {
-        justifyContent: 'center',
+        flexDirection: 'row',
         alignItems: 'center',
-        overflow: 'hidden',
-        borderRadius: 16,
-        height: 56,
-        width: '100%',
+        justifyContent: 'center',
     },
     wrapper_property_padding: {
         padding: 0,
@@ -128,9 +126,12 @@ const styles = StyleSheet.create({
         opacity: 0.56,
     },
     wrapper__content: {
-        flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
+        borderRadius: 16,
+        height: 56,
+        width: '100%',
         paddingHorizontal: 16,
         paddingVertical: 8,
     },

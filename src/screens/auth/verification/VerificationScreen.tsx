@@ -1,19 +1,22 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import { Screens } from '@navigation/constants';
-import { AuthStackParams } from '@navigation/stacks/AuthStack';
+import React, { useEffect, useState } from 'react';
+import { Alert, BackHandler, StyleSheet, Text, View } from 'react-native';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import Button from '@components/atoms/Button';
 import { CodeField, Cursor, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import constants from '@utils/constants';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { Screens, Stacks } from '@navigation/constants';
+import { AuthStackParams } from '@navigation/stacks/AuthStack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AppStackParams } from '@navigation/AppNavigator';
 
 const VerificationScreen: React.FC<
-    NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.VERIFICATION>
+    CompositeScreenProps<
+        NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.VERIFICATION>,
+        NativeStackScreenProps<AppStackParams>
+    >
 > = props => {
-    const { navigation } = props;
-
     const [value, setValue] = useState('');
 
     const [prop, getCellOnLayoutHandler] = useClearByFocusCell({ value, setValue });
@@ -25,6 +28,16 @@ const VerificationScreen: React.FC<
             </Text>
         );
     };
+
+    let backHandler;
+
+    useEffect(() => {
+        backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            return true;
+        });
+
+        return () => backHandler.remove();
+    }, []);
 
     return (
         <View style={styles.wrapper}>
@@ -43,8 +56,22 @@ const VerificationScreen: React.FC<
                 />
             </View>
             <View style={styles.wrapper__content}>
-                <Button title={constants.buttonTextContinue} mode={Button.Mode.Contained} />
-                <Button title={constants.buttonTextRetry} mode={Button.Mode.Blank} />
+                <Button
+                    title={constants.buttonTextContinue}
+                    mode={Button.Mode.Contained}
+                    onPress={() => {
+                        backHandler.remove();
+                        props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
+                    }}
+                />
+                <Button
+                    title={constants.buttonTextRetry}
+                    mode={Button.Mode.Blank}
+                    onPress={() => {
+                        backHandler.remove();
+                        props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
+                    }}
+                />
             </View>
         </View>
     );

@@ -1,50 +1,93 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React from 'react';
-import { Keyboard, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { BackHandler, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Screens } from '@navigation/constants';
 import { AuthStackParams } from '@navigation/stacks/AuthStack';
+import Alert from '@components/molecules/Alert';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import Dropdown from '@components/molecules/Dropdown';
 import Button from '@components/atoms/Button';
 import constants from '@utils/constants';
 
-const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = () => {
+const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = props => {
     const [number, onChangeNumber] = React.useState('');
+    const [showAlert, setShowAlert] = useState(false);
+
+    let backHandler;
+
+    useEffect(() => {
+        backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            setShowAlert(!showAlert);
+            return true;
+        });
+
+        return () => backHandler.remove();
+    }, [showAlert]);
 
     return (
-        <View style={styles.wrapper}>
-            <View style={styles.wrapper__pooling_container}>
-                <Text style={styles.wrapper__header}>{constants.header}</Text>
-                <Text style={styles.wrapper__text_instruction}>{constants.instruction}</Text>
-                <Dropdown />
-                <View style={styles.wrapper__phone_input}>
-                    <Text style={styles.phone_input__text}>{constants.phoneIndex}</Text>
-                    <View style={styles.phone_input__separator} />
-                    <TextInput
-                        style={styles.phone_input__input}
-                        placeholder={constants.placeHolder}
-                        maxLength={10}
-                        keyboardType='numeric'
-                        onChangeText={prop => {
-                            onChangeNumber(prop);
-                            if (prop.length === 10) {
-                                Keyboard.dismiss();
-                            }
+        <>
+            <View style={styles.wrapper}>
+                <View style={styles.wrapper__pooling_container}>
+                    <Text style={styles.wrapper__header}>{constants.header}</Text>
+                    <Text style={styles.wrapper__text_instruction}>{constants.instruction}</Text>
+                    <Dropdown changeDropDown={number} />
+                    <View style={styles.wrapper__phone_input}>
+                        <Text style={styles.phone_input__text}>{constants.phoneIndex}</Text>
+                        <View style={styles.phone_input__separator} />
+                        <TextInput
+                            style={styles.phone_input__input}
+                            placeholder={constants.placeHolder}
+                            maxLength={10}
+                            keyboardType='numeric'
+                            onChangeText={prop => {
+                                onChangeNumber(prop);
+                                if (prop.length === 10) {
+                                    Keyboard.dismiss();
+                                }
+                            }}
+                            value={number}
+                        />
+                    </View>
+                </View>
+                <View style={styles.wrapper__pooling_container}>
+                    <Button
+                        title={constants.buttonTextNext}
+                        mode={Button.Mode.Contained}
+                        onPress={() => {
+                            backHandler.remove();
+                            props.navigation.navigate('SCREEN_VERIFICATION');
                         }}
-                        value={number}
+                    />
+                    <Button
+                        title={constants.buttonTextNextGuest}
+                        onPress={() => {
+                            backHandler.remove();
+                            props.navigation.navigate('SCREEN_VERIFICATION');
+                        }}
                     />
                 </View>
             </View>
-            <View style={styles.wrapper__pooling_container}>
-                <Button title={constants.buttonTextNext} mode={Button.Mode.Contained} />
-                <Button title={constants.buttonTextNextGuest} />
-            </View>
-        </View>
+            <Alert
+                showAlert={showAlert}
+                onPress={() => {
+                    setShowAlert(!showAlert);
+                }}
+            />
+        </>
     );
 };
 
 const styles = StyleSheet.create({
+    content: {
+        height: 300,
+        width: 300,
+        marginTop: 400,
+        backgroundColor: '#000',
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     wrapper: {
         flex: 1,
         flexDirection: 'column',

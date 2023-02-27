@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
@@ -11,7 +11,16 @@ import Animated, {
 } from 'react-native-reanimated';
 import constants from '@utils/constants';
 
-const Dropdown: React.FC = () => {
+export interface IDropdown {
+    changeDropDown: string;
+}
+const Dropdown: React.FC<IDropdown> = props => {
+    const { changeDropDown } = props;
+
+    useEffect(() => {
+        collapse.value = 0;
+    }, [changeDropDown]);
+
     const collapse = useSharedValue(0);
     const [chosen, setChosen] = useState(0);
 
@@ -40,7 +49,9 @@ const Dropdown: React.FC = () => {
         <View style={styles.content}>
             <RenderItem
                 title={constants.DATA[chosen].title}
-                onPress={changeHeight}
+                onPress={() => {
+                    changeHeight();
+                }}
                 child={
                     <Animated.View style={[styles.content__switcherWrapper, switcherAnimatedStyle]}>
                         <Image

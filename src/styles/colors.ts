@@ -1,4 +1,4 @@
-export const colors = {
+const colors = {
     TRANSPARENT: '#00000000',
     WHITE: '#FFFFFF',
     BLACK: '#000000',
@@ -7,6 +7,8 @@ export const colors = {
     SOFT_WHITE: '#FFFDF9',
     SOFT_GREY: '#F9F9F9',
     SKELETON: '#F0F0F0',
+    LIGHT_GREY: '#939393',
+    GREY_BOX: '#F5F5F5',
 
     TEXT_PRIMARY: '#989898',
     TEXT_INSTRUCTION: '#4C4C4C',

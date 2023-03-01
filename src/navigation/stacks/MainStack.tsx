@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import MainScreen from '@screens/main/main/MainScreen';
+import MainScreen from '@screens/main/main/StoryScreen';
 import { Screens } from '../constants';
-import StoryScreen from '@screens/main/story/StoryScreen';
+import StoryScreen from '@screens/main/story/MainScreen';
 
 export type MainStackParams = {
     [Screens.Main.MAIN]: undefined;

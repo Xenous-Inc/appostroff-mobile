@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Screens } from '@navigation/constants';
 import { AuthStackParams } from '@navigation/stacks/AuthStack';
 import sizes from '@styles/sizes';

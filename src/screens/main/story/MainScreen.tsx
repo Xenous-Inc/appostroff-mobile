@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 import { Screens } from '@navigation/constants';
 import { MainStackParams } from '@navigation/stacks/MainStack';
 
-const MainScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Screens.Main.MAIN>> = props => {
+const MainScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Screens.Main.STORY>> = props => {
     const { navigation } = props;
 
     return (

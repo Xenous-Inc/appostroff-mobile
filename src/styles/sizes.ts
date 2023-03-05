@@ -13,7 +13,4 @@ export default {
 
     CELL_SIZE: 55.8,
     CELL_BORDER_RADIUS: 8,
-    // DEFAULT_CELL_BG_COLOR: '#fff'
-    // NOT_EMPTY_CELL_BG_COLOR: '#3557b7'
-    // ACTIVE_CELL_BG_COLOR: '#f7fafe'
 };

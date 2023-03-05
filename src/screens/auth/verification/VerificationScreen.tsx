@@ -1,19 +1,22 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import { Screens } from '@navigation/constants';
-import { AuthStackParams } from '@navigation/stacks/AuthStack';
+import { StyleSheet, Text, View } from 'react-native';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import Button from '@components/atoms/Button';
 import { CodeField, Cursor, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import constants from '@utils/constants';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { Screens, Stacks } from '@navigation/constants';
+import { AuthStackParams } from '@navigation/stacks/AuthStack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AppStackParams } from '@navigation/AppNavigator';
 
 const VerificationScreen: React.FC<
-    NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.VERIFICATION>
+    CompositeScreenProps<
+        NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.VERIFICATION>,
+        NativeStackScreenProps<AppStackParams>
+    >
 > = props => {
-    const { navigation } = props;
-
     const [value, setValue] = useState('');
 
     const [prop, getCellOnLayoutHandler] = useClearByFocusCell({ value, setValue });
@@ -42,9 +45,21 @@ const VerificationScreen: React.FC<
                     renderCell={renderItem}
                 />
             </View>
-            <View style={styles.wrapper__content}>
-                <Button title={constants.buttonTextContinue} mode={Button.Mode.Contained} />
-                <Button title={constants.buttonTextRetry} mode={Button.Mode.Blank} />
+            <View style={styles.wrapper__buttons_container}>
+                <Button
+                    title={constants.buttonTextContinue}
+                    mode={Button.Mode.Contained}
+                    onPress={() => {
+                        props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
+                    }}
+                />
+                <Button
+                    title={constants.buttonTextRetry}
+                    mode={Button.Mode.Blank}
+                    onPress={() => {
+                        props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
+                    }}
+                />
             </View>
         </View>
     );
@@ -57,6 +72,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'space-between',
         paddingTop: 76,
+        paddingHorizontal: sizes.PADDING_BIG,
         backgroundColor: colors.WHITE,
     },
     content__header: {
@@ -72,7 +88,10 @@ const styles = StyleSheet.create({
     },
     wrapper__content: {
         width: '100%',
-        paddingHorizontal: sizes.PADDING_BIG,
+    },
+    wrapper__buttons_container: {
+        width: '100%',
+        marginBottom: sizes.PADDING_BIG,
     },
     content__code_field: {
         height: 55.8,

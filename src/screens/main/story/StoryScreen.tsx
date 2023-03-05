@@ -18,36 +18,7 @@ import SkeletonLoader from 'expo-skeleton-loader';
 import durations from '@styles/durations';
 import { LoaderItemStyle } from 'expo-skeleton-loader/lib/Constants';
 import sizes from '@styles/sizes';
-
-const DATA =
-    'Отец мой Андрей Петрович Гринев в молодости своей служил при графе Минихе и вышел в ' +
-    'отставку премьер-майором в 17.. году. С тех пор жил он в своей Симбирской деревне, где и женился' +
-    'на девице Авдотье Васильевне Ю., дочери бедного тамошнего дворянина. Нас было девять человек' +
-    'детей. Все мои братья и сестры умерли во младенчестве. Матушка была еще мною брюхата, как уже я' +
-    'был записан в Семеновский полк сержантом, по милости майора гвардии князя В., близкого нашего' +
-    'родственника. Если бы паче всякого чаяния матушка родила дочь, то батюшка объявил бы куда' +
-    'следовало о смерти неявившегося сержанта, и дело тем бы и кончилось. Я считался в отпуску до' +
-    'окончания наук. В то время воспитывались мы не по-нонешнему. С пятилетнего возраста отдан я был' +
-    'на руки стремянному Савельичу, за трезвое поведение пожалованному мне в дядьки. Под его надзором' +
-    'на двенадцатом году выучился я русской грамоте и мог очень здраво судить о свойствах борзого' +
-    'кобеля. В это время батюшка нанял для меня француза, мосье Бопре, которого выписали из Москвы' +
-    'вместе с годовым запасом вина и прованского масла. Приезд его сильно не понравился Савельичу.' +
-    '«Слава богу, — ворчал он про себя, — кажется, дитя умыт, причесан, накормлен. Куда как нужно\n' +
-    'тратить лишние деньги и...' +
-    'Отец мой Андрей Петрович Гринев в молодости своей служил при графе Минихе и вышел в ' +
-    'отставку премьер-майором в 17.. году. С тех пор жил он в своей Симбирской деревне, где и женился' +
-    'на девице Авдотье Васильевне Ю., дочери бедного тамошнего дворянина. Нас было девять человек' +
-    'детей. Все мои братья и сестры умерли во младенчестве. Матушка была еще мною брюхата, как уже я' +
-    'был записан в Семеновский полк сержантом, по милости майора гвардии князя В., близкого нашего' +
-    'родственника. Если бы паче всякого чаяния матушка родила дочь, то батюшка объявил бы куда' +
-    'следовало о смерти неявившегося сержанта, и дело тем бы и кончилось. Я считался в отпуску до' +
-    'окончания наук. В то время воспитывались мы не по-нонешнему. С пятилетнего возраста отдан я был' +
-    'на руки стремянному Савельичу, за трезвое поведение пожалованному мне в дядьки. Под его надзором' +
-    'на двенадцатом году выучился я русской грамоте и мог очень здраво судить о свойствах борзого' +
-    'кобеля. В это время батюшка нанял для меня француза, мосье Бопре, которого выписали из Москвы' +
-    'вместе с годовым запасом вина и прованского масла. Приезд его сильно не понравился Савельичу.' +
-    '«Слава богу, — ворчал он про себя, — кажется, дитя умыт, причесан, накормлен. Куда как нужно\n' +
-    'тратить лишние деньги и';
+import constants from '@utils/constants';
 
 const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Screens.Main.STORY>> = () => {
     // window safe area height
@@ -60,9 +31,6 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
     const [storyTextHeight, setStoryTextHeight] = useState(0);
     // defines shift in pixels, is used to translate story view to make animated transition
     const [shortStoryTextShiftBottom, setShortStoryTextShiftBottom] = useState(0);
-    // defines shift in pixels, is used to translate progress bar to make animated transition
-    const [bookIconShiftRight, setBookIconShiftRight] = useState(0);
-    const [bookIconShiftTop, setBookIconShiftTop] = useState(0);
     // defines number of symbols from story showed in short story block
     const [shortStoryLength, setShortStoryLength] = useState(0);
     // defines number of lines from story showed in short story block
@@ -78,7 +46,7 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
     const isShortStoryMeasured = useSharedValue(false);
 
     const barAnimatedStyle = useAnimatedStyle(() => {
-        const opacity = interpolate(collapseProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP);
+        const opacity = collapseProgress.value;
         const marginTop = insets.top;
         const width = windowWidth - styles.wrapper__progress.marginHorizontal * 2;
 
@@ -87,14 +55,14 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
             opacity,
             marginTop,
         };
-    }, [bookIconShiftTop, bookIconShiftRight, shortStoryTextShiftBottom, insets.top]);
+    });
 
     const progressAnimatedStyle = useAnimatedStyle(() => {
         const width = interpolate(scrollProgress.value, [0, 1], [0, windowWidth / 1.6], Extrapolation.CLAMP);
-        const opacity = interpolate(collapseProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP);
+        const opacity = collapseProgress.value;
 
         return { width, opacity };
-    }, [windowWidth]);
+    });
 
     // disable paging after cover collapse
     const scrollViewAnimatedProps = useAnimatedProps<ScrollViewProps>(
@@ -182,7 +150,7 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
     }, [shortStoryTextShiftBottom]);
 
     const containerAnimatedStyle = useAnimatedStyle(() => {
-        const opacity = interpolate(collapseProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP);
+        const opacity = collapseProgress.value;
         return { opacity };
     }, [collapseProgress]);
 
@@ -227,7 +195,7 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                                 ellipsizeMode={'tail'}
                                 textBreakStrategy={'balanced'}
                             >
-                                {DATA.slice(0, shortStoryLength)}
+                                {constants.storyText.slice(0, shortStoryLength)}
                             </Animated.Text>
                         </View>
                     </View>
@@ -239,7 +207,7 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                         onLayout={handleStoryLayout}
                     >
                         <Text style={styles.story_text} textBreakStrategy={'balanced'} selectable={true}>
-                            {DATA}
+                            {constants.storyText}
                         </Text>
                     </Animated.View>
                     <View style={{ height: 200, width: '100%' }} />

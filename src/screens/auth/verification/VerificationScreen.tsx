@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, BackHandler, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import Button from '@components/atoms/Button';
@@ -29,16 +29,6 @@ const VerificationScreen: React.FC<
         );
     };
 
-    let backHandler;
-
-    useEffect(() => {
-        backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-            return true;
-        });
-
-        return () => backHandler.remove();
-    }, []);
-
     return (
         <View style={styles.wrapper}>
             <View style={styles.wrapper__content}>
@@ -55,12 +45,11 @@ const VerificationScreen: React.FC<
                     renderCell={renderItem}
                 />
             </View>
-            <View style={styles.wrapper__content}>
+            <View style={styles.wrapper__buttons_container}>
                 <Button
                     title={constants.buttonTextContinue}
                     mode={Button.Mode.Contained}
                     onPress={() => {
-                        backHandler.remove();
                         props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
                     }}
                 />
@@ -68,7 +57,6 @@ const VerificationScreen: React.FC<
                     title={constants.buttonTextRetry}
                     mode={Button.Mode.Blank}
                     onPress={() => {
-                        backHandler.remove();
                         props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
                     }}
                 />
@@ -84,6 +72,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'space-between',
         paddingTop: 76,
+        paddingHorizontal: sizes.PADDING_BIG,
         backgroundColor: colors.WHITE,
     },
     content__header: {
@@ -99,7 +88,10 @@ const styles = StyleSheet.create({
     },
     wrapper__content: {
         width: '100%',
-        paddingHorizontal: sizes.PADDING_BIG,
+    },
+    wrapper__buttons_container: {
+        width: '100%',
+        marginBottom: sizes.PADDING_BIG,
     },
     content__code_field: {
         height: 55.8,

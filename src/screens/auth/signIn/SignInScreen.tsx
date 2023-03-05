@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useRef, useState } from 'react';
-import { BackHandler, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { BackHandler, Keyboard, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Screens } from '@navigation/constants';
 import { AuthStackParams } from '@navigation/stacks/AuthStack';
 import Alert from '@components/molecules/Alert';
@@ -9,29 +9,46 @@ import colors from '@styles/colors';
 import Dropdown from '@components/molecules/Dropdown';
 import Button from '@components/atoms/Button';
 import constants from '@utils/constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = props => {
     const [number, onChangeNumber] = React.useState('');
     const [showAlert, setShowAlert] = useState(false);
+    const [isTexting, setIsTexting] = useState(false);
+    const backHandler = useRef(null);
 
-    let backHandler;
+    const insets = useSafeAreaInsets();
 
     useEffect(() => {
-        backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-            setShowAlert(!showAlert);
-            return true;
+        const unsubscribeFocus = props.navigation.addListener('focus', () => {
+            if (Platform.OS === 'android') {
+                BackHandler.addEventListener('hardwareBackPress', onAndroidBackPress);
+            }
+        });
+        const unsubscribeBlur = props.navigation.addListener('blur', () => {
+            if (Platform.OS === 'android') {
+                BackHandler.removeEventListener('hardwareBackPress', onAndroidBackPress);
+            }
         });
 
-        return () => backHandler.remove();
+        return () => {
+            unsubscribeFocus();
+            unsubscribeBlur();
+        };
     }, [showAlert]);
+
+    const onAndroidBackPress = () => {
+        setShowAlert(!showAlert);
+        return true;
+    };
 
     return (
         <>
-            <View style={styles.wrapper}>
-                <View style={styles.wrapper__pooling_container}>
+            <View style={[styles.wrapper, { paddingTop: insets.top * 2 }]}>
+                <View style={[styles.wrapper__pooling_container]}>
                     <Text style={styles.wrapper__header}>{constants.header}</Text>
                     <Text style={styles.wrapper__text_instruction}>{constants.instruction}</Text>
-                    <Dropdown changeDropDown={number} />
+                    <Dropdown isTexting={isTexting} />
                     <View style={styles.wrapper__phone_input}>
                         <Text style={styles.phone_input__text}>{constants.phoneIndex}</Text>
                         <View style={styles.phone_input__separator} />
@@ -40,60 +57,48 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
                             placeholder={constants.placeHolder}
                             maxLength={10}
                             keyboardType='numeric'
+                            onPressIn={() => {
+                                console.log('123');
+                                setIsTexting(!isTexting);
+                            }}
                             onChangeText={prop => {
                                 onChangeNumber(prop);
                                 if (prop.length === 10) {
                                     Keyboard.dismiss();
+                                    setIsTexting(false);
                                 }
                             }}
                             value={number}
                         />
                     </View>
                 </View>
-                <View style={styles.wrapper__pooling_container}>
+                <View style={styles.wrapper__button_container}>
                     <Button
                         title={constants.buttonTextNext}
                         mode={Button.Mode.Contained}
                         onPress={() => {
-                            backHandler.remove();
-                            props.navigation.navigate('SCREEN_VERIFICATION');
+                            props.navigation.navigate(Screens.Auth.VERIFICATION);
                         }}
                     />
                     <Button
                         title={constants.buttonTextNextGuest}
                         onPress={() => {
-                            backHandler.remove();
-                            props.navigation.navigate('SCREEN_VERIFICATION');
+                            props.navigation.navigate(Screens.Auth.VERIFICATION);
                         }}
                     />
                 </View>
             </View>
-            <Alert
-                showAlert={showAlert}
-                onPress={() => {
-                    setShowAlert(!showAlert);
-                }}
-            />
+            <Alert showAlert={showAlert} setShowAlert={setShowAlert} />
         </>
     );
 };
 
 const styles = StyleSheet.create({
-    content: {
-        height: 300,
-        width: 300,
-        marginTop: 400,
-        backgroundColor: '#000',
-        position: 'absolute',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     wrapper: {
         flex: 1,
         flexDirection: 'column',
         alignItems: 'flex-start',
         justifyContent: 'space-between',
-        paddingTop: 76,
         paddingHorizontal: sizes.PADDING_BIG,
         backgroundColor: colors.WHITE,
     },
@@ -101,6 +106,9 @@ const styles = StyleSheet.create({
         fontSize: sizes.TEXT_BIG,
         fontFamily: 'RFDewi_Bold',
         marginBottom: sizes.PADDING_SMALL,
+    },
+    wrapper__pooling_container: {
+        width: '100%',
     },
     wrapper__text_instruction: {
         fontSize: sizes.TEXT_LITTLE,
@@ -135,8 +143,9 @@ const styles = StyleSheet.create({
         fontSize: sizes.TEXT_SMALL,
         fontFamily: 'RFDewi_Semibold',
     },
-    wrapper__pooling_container: {
+    wrapper__button_container: {
         width: '100%',
+        marginBottom: sizes.PADDING_BIG,
     },
 });
 

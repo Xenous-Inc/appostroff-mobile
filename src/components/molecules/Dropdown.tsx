@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Dimensions, FlatList, Image, Keyboard, Pressable, StyleSheet, Text, View } from 'react-native';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import Animated, {
@@ -10,22 +10,28 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import constants from '@utils/constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export interface IDropdown {
-    changeDropDown: string;
+    isTexting: boolean;
 }
 const Dropdown: React.FC<IDropdown> = props => {
-    const { changeDropDown } = props;
+    const { isTexting } = props;
 
     useEffect(() => {
         collapse.value = 0;
-    }, [changeDropDown]);
+    }, [isTexting]);
+
+    const insets = useSafeAreaInsets();
+
+    const windowHeight = useMemo(() => Dimensions.get('window').height - insets.top - insets.bottom, [insets]);
+    const windowWidth = useMemo(() => Dimensions.get('screen').width - insets.left - insets.right, [insets]);
 
     const collapse = useSharedValue(0);
     const [chosen, setChosen] = useState(0);
 
     const animatedStyle = useAnimatedStyle(() => {
-        const height = interpolate(collapse.value, [0, 1], [0, 56 * constants.DATA.length], Extrapolation.CLAMP);
+        const height = interpolate(collapse.value, [0, 1], [0, windowHeight - 400], Extrapolation.CLAMP);
         return {
             height: withTiming(height, {
                 duration: 500,
@@ -43,6 +49,7 @@ const Dropdown: React.FC<IDropdown> = props => {
 
     const changeHeight = () => {
         collapse.value = 1 - collapse.value;
+        Keyboard.dismiss();
     };
 
     return (
@@ -62,7 +69,7 @@ const Dropdown: React.FC<IDropdown> = props => {
                 }
             />
             <View style={styles.content__separator} />
-            <Animated.View style={[styles.countries_list, animatedStyle]}>
+            <Animated.View style={[styles.content__countries_list, animatedStyle]}>
                 <FlatList
                     data={constants.DATA}
                     renderItem={({ item, index }) => (
@@ -143,7 +150,7 @@ const styles = StyleSheet.create({
         fontSize: sizes.TEXT_SMALL,
         marginLeft: 20,
     },
-    countries_list: {
+    content__countries_list: {
         backgroundColor: colors.SOFT_GREY,
     },
     content__switcherWrapper: {

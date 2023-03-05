@@ -7,6 +7,7 @@ export const colors = {
     SOFT_WHITE: '#FFFDF9',
     SOFT_GREY: '#F9F9F9',
     SKELETON: '#F0F0F0',
+    ALERT_BACKGROUND: 'rgba(141,141,141,0.5)',
 
     TEXT_PRIMARY: '#989898',
     TEXT_INSTRUCTION: '#4C4C4C',

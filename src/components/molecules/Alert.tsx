@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { BackHandler, Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { BackHandler, Pressable, StyleSheet, Text, View } from 'react-native';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import Animated, {
@@ -11,25 +11,24 @@ import Animated, {
 } from 'react-native-reanimated';
 import constants from '@utils/constants';
 
-export interface IDropdown {
+export interface IAlert {
     showAlert: boolean;
-    onPress(): void;
+    setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const Dropdown: React.FC<IDropdown> = props => {
-    const { showAlert, onPress } = props;
+const Alert: React.FC<IAlert> = props => {
+    const { showAlert, setShowAlert } = props;
 
     useEffect(() => {
-        console.log('change');
         showAlert ? (collapse.value = 1) : (collapse.value = 0);
     }, [showAlert]);
 
     const collapse = useSharedValue(0);
 
     const wrapperAnimatedStyles = useAnimatedStyle(() => {
-        const opacity = interpolate(collapse.value, [0, 1], [0, 0.7], Extrapolation.CLAMP);
+        const opacity = interpolate(collapse.value, [0, 1], [0, 1], Extrapolation.CLAMP);
         return {
             opacity: withTiming(opacity, {
-                duration: 500,
+                duration: 200,
             }),
         };
     });
@@ -38,28 +37,27 @@ const Dropdown: React.FC<IDropdown> = props => {
         <Animated.View style={[styles.wrapper, wrapperAnimatedStyles]} pointerEvents={showAlert ? 'auto' : 'none'}>
             <Pressable
                 onPress={() => {
-                    onPress();
+                    setShowAlert(!showAlert);
                 }}
                 style={styles.wrapper__pressable}
             />
             <View style={styles.content__alertDialog}>
-                <Text style={styles.alertDialog__exit_text}>{constants.exitText}</Text>
-                <View style={styles.alertDialog__content_text}>
+                <Text style={styles.alertDialog__exitText}>{constants.exitText}</Text>
+                <View style={styles.alertDialog__contentText}>
                     <Pressable
                         onPress={() => {
-                            onPress();
+                            setShowAlert(!showAlert);
                             BackHandler.exitApp();
                         }}
                     >
-                        <Text style={styles.content_text__action_text}>{constants.yesText}</Text>
+                        <Text style={styles.content_text__actionText}>{constants.yesText}</Text>
                     </Pressable>
                     <Pressable
                         onPress={() => {
-                            onPress();
-                            console.log(collapse.value);
+                            setShowAlert(!showAlert);
                         }}
                     >
-                        <Text style={styles.content_text__action_text}>{constants.noText}</Text>
+                        <Text style={styles.content_text__actionText}>{constants.noText}</Text>
                     </Pressable>
                 </View>
             </View>
@@ -74,11 +72,11 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#8d8d8d',
     },
     wrapper__pressable: {
         height: '100%',
         width: '100%',
+        backgroundColor: colors.ALERT_BACKGROUND,
         position: 'absolute',
         alignItems: 'center',
         justifyContent: 'center',
@@ -91,21 +89,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    alertDialog__exit_text: {
+    alertDialog__exitText: {
         fontSize: sizes.TEXT_LITTLE,
         fontFamily: 'RFDewi_Regular',
         marginVertical: sizes.PADDING_MEDIUM,
     },
-    alertDialog__content_text: {
+    alertDialog__contentText: {
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginVertical: sizes.PADDING_MEDIUM,
     },
-    content_text__action_text: {
+    content_text__actionText: {
         fontFamily: 'RFDewi_Bold',
         fontSize: sizes.TEXT_SMALL,
     },
 });
 
-export default Dropdown;
+export default Alert;

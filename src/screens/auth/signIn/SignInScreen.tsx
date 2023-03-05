@@ -15,7 +15,6 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
     const [number, onChangeNumber] = React.useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [isTexting, setIsTexting] = useState(false);
-    const backHandler = useRef(null);
 
     const insets = useSafeAreaInsets();
 
@@ -35,7 +34,7 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
             unsubscribeFocus();
             unsubscribeBlur();
         };
-    }, [showAlert]);
+    }, []);
 
     const onAndroidBackPress = () => {
         setShowAlert(!showAlert);
@@ -58,7 +57,6 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
                             maxLength={10}
                             keyboardType='numeric'
                             onPressIn={() => {
-                                console.log('123');
                                 setIsTexting(!isTexting);
                             }}
                             onChangeText={prop => {

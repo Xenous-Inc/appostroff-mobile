@@ -1,17 +1,21 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import { Screens } from '@navigation/constants';
 import { MainStackParams } from '@navigation/stacks/MainStack';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import constants from '@utils/constants';
-import Box from '@components/atoms/Box';
+import Box from '@components/molecules/Box';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Screens.Main.MAIN>> = props => {
     const { navigation } = props;
+
+    const insets = useSafeAreaInsets();
+
     return (
-        <View style={styles.wrapper}>
+        <View style={[styles.wrapper, { paddingTop: insets.top * 1.5 }]}>
             <View style={styles.wrapper__content}>
                 <View style={styles.content__profile_wrapper}>
                     <Image source={require('@assets/icons/profile.png')} style={styles.content__profile} />
@@ -20,7 +24,7 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                     <Text style={styles.content__header}>{constants.headerMain}</Text>
                 </View>
                 <View style={styles.content__cover_boxes}>
-                    <Image source={require('@assets/icons/bookCover.png')} />
+                    <Image source={require('@assets/icons/bookCover.png')} style={styles.content__cover} />
                     <View style={styles.wrapper__content_boxes}>
                         <Box
                             textHeader={constants.textRating}
@@ -41,13 +45,13 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                 </View>
                 <View style={styles.wrapper__content_genres}>
                     <View style={styles.content__boxg}>
-                        <Text style={styles.content__boxg1}>{constants.textMystic}</Text>
+                        <Text style={styles.content__textTag}>{constants.textMystic}</Text>
                     </View>
                     <View style={styles.content__boxg}>
-                        <Text style={styles.content__boxg2}>{constants.textThriller}</Text>
+                        <Text style={styles.content__textTag}>{constants.textThriller}</Text>
                     </View>
                     <View style={styles.content__boxg}>
-                        <Text style={styles.content__boxg3}>{constants.textRomance}</Text>
+                        <Text style={styles.content__textTag}>{constants.textRomance}</Text>
                     </View>
                 </View>
             </View>
@@ -61,12 +65,15 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'flex-start',
         justifyContent: 'space-between',
-        paddingTop: 76,
         backgroundColor: colors.WHITE,
     },
     content__profile: {
         width: 24,
         height: 24,
+    },
+    content__cover: {
+        height: '100%',
+        borderRadius: 16,
     },
     content__profile_wrapper: {
         alignItems: 'flex-end',
@@ -84,15 +91,6 @@ const styles = StyleSheet.create({
         fontFamily: 'RFDewi_Bold',
         marginBottom: sizes.PADDING_LITTLE,
     },
-    content__box: {
-        width: 165,
-        height: 66,
-        backgroundColor: colors.GREY_BOX,
-        borderRadius: 16,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
     content__cover_boxes: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -104,60 +102,19 @@ const styles = StyleSheet.create({
         height: 38,
         backgroundColor: colors.WHITE,
         borderRadius: 8,
-        marginHorizontal: 12.02,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    content__box1_text1: {
-        fontSize: sizes.TEXT_LITTLE,
-        fontFamily: 'RFDewi_Semibold',
-        color: colors.LIGHT_GREY,
-    },
-    content__box1_text2: {
-        fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Semibold',
-        color: colors.BLACK,
-    },
-    content__box2_text1: {
-        fontSize: sizes.TEXT_LITTLE,
-        fontFamily: 'RFDewi_Semibold',
-        color: colors.LIGHT_GREY,
-    },
-    content__box2_text2: {
-        fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Semibold',
-        color: colors.BLACK,
-    },
-    content__box3_text1: {
-        fontSize: sizes.TEXT_LITTLE,
-        fontFamily: 'RFDewi_Semibold',
-        color: colors.LIGHT_GREY,
-    },
-    content__box3_text2: {
-        fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Semibold',
-        color: colors.BLACK,
     },
     content__boxg: {
         marginTop: sizes.PADDING_SMALL,
-        width: 107,
-        height: 35,
         backgroundColor: colors.GREY_BOX,
         borderRadius: 12,
+        height: 34,
+        width: Dimensions.get('window').width / 3.7,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    content__boxg1: {
-        fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Semibold',
-        color: colors.LIGHT_GREY,
-    },
-    content__boxg2: {
-        fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Semibold',
-        color: colors.LIGHT_GREY,
-    },
-    content__boxg3: {
+    content__textTag: {
         fontSize: sizes.TEXT_SMALL,
         fontFamily: 'RFDewi_Semibold',
         color: colors.LIGHT_GREY,
@@ -167,9 +124,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: sizes.PADDING_BIG,
     },
     wrapper__content_boxes: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'space-between',
         height: '100%',
+        paddingLeft: 20,
     },
     wrapper__content_genres: {
         width: '100%',

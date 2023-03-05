@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import MainScreen from '@screens/main/main/StoryScreen';
+import MainScreen from '@screens/main/main/MainScreen';
 import { Screens } from '../constants';
-import StoryScreen from '@screens/main/story/MainScreen';
+import StoryScreen from '@screens/main/story/StoryScreen';
 
 export type MainStackParams = {
     [Screens.Main.MAIN]: undefined;
@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator<MainStackParams>();
 
 const MainStack: React.FC = () => {
     return (
-        <Stack.Navigator initialRouteName={Screens.Main.MAIN} screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName={Screens.Main.STORY} screenOptions={{ headerShown: false }}>
             <Stack.Screen key={Screens.Main.MAIN} name={Screens.Main.MAIN} component={MainScreen} />
             <Stack.Screen key={Screens.Main.STORY} name={Screens.Main.STORY} component={StoryScreen} />
         </Stack.Navigator>

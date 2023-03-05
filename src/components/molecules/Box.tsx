@@ -26,7 +26,7 @@ const Box: React.FC<IBox> = props => {
 
 const styles = StyleSheet.create({
     content: {
-        width: 165,
+        width: '100%',
         height: 66,
         backgroundColor: colors.GREY_BOX,
         borderRadius: 16,

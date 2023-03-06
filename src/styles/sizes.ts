@@ -11,4 +11,7 @@ export default {
     PADDING_MEDIUM: 20,
     PADDING_SMALL: 16,
     PADDING_LITTLE: 12,
+
+    CELL_SIZE: 55.8,
+    CELL_BORDER_RADIUS: 8,
 };

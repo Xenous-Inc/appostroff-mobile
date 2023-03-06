@@ -1,46 +1,93 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React from 'react';
-import { Keyboard, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { BackHandler, Keyboard, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Screens } from '@navigation/constants';
 import { AuthStackParams } from '@navigation/stacks/AuthStack';
+import Alert from '@components/molecules/Alert';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import Dropdown from '@components/molecules/Dropdown';
 import Button from '@components/atoms/Button';
 import constants from '@utils/constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = () => {
+const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = props => {
     const [number, onChangeNumber] = React.useState('');
+    const [showAlert, setShowAlert] = useState(false);
+    const [isTexting, setIsTexting] = useState(false);
+
+    const insets = useSafeAreaInsets();
+
+    useEffect(() => {
+        const unsubscribeFocus = props.navigation.addListener('focus', () => {
+            if (Platform.OS === 'android') {
+                BackHandler.addEventListener('hardwareBackPress', onAndroidBackPress);
+            }
+        });
+        const unsubscribeBlur = props.navigation.addListener('blur', () => {
+            if (Platform.OS === 'android') {
+                BackHandler.removeEventListener('hardwareBackPress', onAndroidBackPress);
+            }
+        });
+
+        return () => {
+            unsubscribeFocus();
+            unsubscribeBlur();
+        };
+    }, []);
+
+    const onAndroidBackPress = () => {
+        setShowAlert(!showAlert);
+        return true;
+    };
 
     return (
-        <View style={styles.wrapper}>
-            <View style={styles.wrapper__pooling_container}>
-                <Text style={styles.wrapper__header}>{constants.header}</Text>
-                <Text style={styles.wrapper__text_instruction}>{constants.instruction}</Text>
-                <Dropdown />
-                <View style={styles.wrapper__phone_input}>
-                    <Text style={styles.phone_input__text}>{constants.phoneIndex}</Text>
-                    <View style={styles.phone_input__separator} />
-                    <TextInput
-                        style={styles.phone_input__input}
-                        placeholder={constants.placeHolder}
-                        maxLength={10}
-                        keyboardType='numeric'
-                        onChangeText={prop => {
-                            onChangeNumber(prop);
-                            if (prop.length === 10) {
-                                Keyboard.dismiss();
-                            }
+        <>
+            <View style={[styles.wrapper, { paddingTop: insets.top * 2 }]}>
+                <View style={[styles.wrapper__pooling_container]}>
+                    <Text style={styles.wrapper__header}>{constants.header}</Text>
+                    <Text style={styles.wrapper__text_instruction}>{constants.instruction}</Text>
+                    <Dropdown isTexting={isTexting} />
+                    <View style={styles.wrapper__phone_input}>
+                        <Text style={styles.phone_input__text}>{constants.phoneIndex}</Text>
+                        <View style={styles.phone_input__separator} />
+                        <TextInput
+                            style={styles.phone_input__input}
+                            placeholder={constants.placeHolder}
+                            maxLength={10}
+                            keyboardType='numeric'
+                            onPressIn={() => {
+                                setIsTexting(!isTexting);
+                            }}
+                            onChangeText={prop => {
+                                onChangeNumber(prop);
+                                if (prop.length === 10) {
+                                    Keyboard.dismiss();
+                                    setIsTexting(false);
+                                }
+                            }}
+                            value={number}
+                        />
+                    </View>
+                </View>
+                <View style={styles.wrapper__button_container}>
+                    <Button
+                        title={constants.buttonTextNext}
+                        mode={Button.Mode.Contained}
+                        onPress={() => {
+                            props.navigation.navigate(Screens.Auth.VERIFICATION);
                         }}
-                        value={number}
+                    />
+                    <Button
+                        title={constants.buttonTextNextGuest}
+                        onPress={() => {
+                            props.navigation.navigate(Screens.Auth.VERIFICATION);
+                        }}
                     />
                 </View>
             </View>
-            <View style={styles.wrapper__pooling_container}>
-                <Button title={constants.buttonTextNext} mode={Button.Mode.Contained} />
-                <Button title={constants.buttonTextNextGuest} />
-            </View>
-        </View>
+            <Alert showAlert={showAlert} setShowAlert={setShowAlert} />
+        </>
     );
 };
 
@@ -50,7 +97,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'flex-start',
         justifyContent: 'space-between',
-        paddingTop: 76,
         paddingHorizontal: sizes.PADDING_BIG,
         backgroundColor: colors.WHITE,
     },
@@ -58,6 +104,9 @@ const styles = StyleSheet.create({
         fontSize: sizes.TEXT_BIG,
         fontFamily: 'RFDewi_Bold',
         marginBottom: sizes.PADDING_SMALL,
+    },
+    wrapper__pooling_container: {
+        width: '100%',
     },
     wrapper__text_instruction: {
         fontSize: sizes.TEXT_LITTLE,
@@ -92,8 +141,9 @@ const styles = StyleSheet.create({
         fontSize: sizes.TEXT_SMALL,
         fontFamily: 'RFDewi_Semibold',
     },
-    wrapper__pooling_container: {
+    wrapper__button_container: {
         width: '100%',
+        marginBottom: sizes.PADDING_BIG,
     },
 });
 

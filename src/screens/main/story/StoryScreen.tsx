@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.GREY_BOX,
         borderRadius: 12,
         height: 34,
-        width: Dimensions.get('window').width / 3.7,
+        width: Dimensions.get('window').width * 0.27,
         justifyContent: 'center',
         alignItems: 'center',
     },

@@ -11,6 +11,8 @@ const colors = {
     TEXT_PRIMARY: '#989898',
     TEXT_INSTRUCTION: '#4C4C4C',
     SEPARATOR: '#EFEFEF',
+    GREY_BOX: '#F5F5F5',
+    LIGHT_GREY: '#939393',
 };
 
 export const namedColors = new Map<string, string>([

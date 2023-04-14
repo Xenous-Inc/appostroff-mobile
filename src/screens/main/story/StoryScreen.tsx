@@ -20,7 +20,6 @@ import { LoaderItemStyle } from 'expo-skeleton-loader/lib/Constants';
 import sizes from '@styles/sizes';
 import constants from '@utils/constants';
 import Box from '@components/molecules/Box';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Screens.Main.STORY>> = () => {
     // window safe area height
@@ -28,6 +27,9 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
 
     const windowHeight = useMemo(() => Dimensions.get('screen').height - insets.top - insets.bottom, [insets]);
     const windowWidth = useMemo(() => Dimensions.get('screen').width - insets.left - insets.right, [insets]);
+
+    // defines height in pixels, it used to track height of static info
+    const [staticContentHeight, setStaticContentHeight] = useState(0);
 
     // defines height in pixels, is used to track scroll progress
     const [storyTextHeight, setStoryTextHeight] = useState(0);
@@ -48,14 +50,13 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
     const isShortStoryMeasured = useSharedValue(false);
 
     const barAnimatedStyle = useAnimatedStyle(() => {
-        const opacity = collapseProgress.value;
-        const marginTop = insets.top;
-        const width = windowWidth - styles.wrapper__progress.marginHorizontal * 2;
+        const opacity = interpolate(collapseProgress.value, [0.8, 1], [0, 1], Extrapolation.CLAMP);
+        const width = windowWidth - styles.wrapper__header.marginHorizontal * 2;
 
         return {
             width,
             opacity,
-            marginTop,
+            marginTop: insets.top,
         };
     });
 
@@ -93,15 +94,35 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
         [windowHeight, storyTextHeight],
     );
 
+    const handleStaticCoverContentLayout = useCallback(
+        (event: LayoutChangeEvent) =>
+            event.target.measure((_x, _y, width, height, _pageX, pageY) => {
+                setStaticContentHeight(height);
+            }),
+
+        [windowHeight, insets.top, insets.bottom],
+    );
+
     // handle layout update of short story view and update necessary values
     const handleShortStoryLayout = useCallback(
         (event: LayoutChangeEvent) =>
             event.target.measure((_x, _y, width, height, _pageX, pageY) => {
+                //console.log('height ' + height);
+                //console.log('winHeight ' + (windowHeight + insets.top + insets.bottom));
                 setShortStoryTextShiftBottom(
-                    windowHeight + insets.top + insets.bottom - pageY + styles.content__story.paddingTop,
+                    windowHeight + insets.top + insets.bottom - pageY + styles.scroll__story.paddingTop,
                 );
                 setShortStoryLength(Math.ceil((width * height * 1.5) / styles.shortStory__text.fontSize ** 2));
-                setShortStoryLines(Math.floor(height / (styles.shortStory__text.fontSize * 1.3)));
+                setShortStoryLines(
+                    Math.floor(
+                        (windowHeight -
+                            staticContentHeight -
+                            insets.top -
+                            insets.bottom -
+                            styles.scroll__cover.padding * 2) /
+                            (styles.shortStory__text.fontSize * 1.5),
+                    ),
+                );
                 isShortStoryMeasured.value = true;
             }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,7 +156,7 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                 ? interpolate(collapseProgress.value, [0, 1], [1, 0], Extrapolation.CLAMP)
                 : withTiming(isShortStoryMeasured.value ? 1 : 0, { duration: durations.SHORT });
 
-        return { opacity, transform: [{ translateY }] };
+        return { opacity: opacity, transform: [{ translateY }] };
     }, [shortStoryTextShiftBottom]);
 
     // opacity: show story during the animated transition
@@ -151,73 +172,77 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
         return { opacity: collapseProgress.value, transform: [{ translateY }] };
     }, [shortStoryTextShiftBottom]);
 
-    const containerAnimatedStyle = useAnimatedStyle(() => {
-        const opacity = collapseProgress.value;
-        return { opacity };
-    }, [collapseProgress]);
+    const staticAnimatedStyle = useAnimatedStyle(() => {
+        const translateY = interpolate(
+            collapseProgress.value,
+            [0, 1],
+            [0, windowHeight - staticContentHeight - insets.top - insets.bottom - styles.scroll__cover.padding * 2],
+            Extrapolation.CLAMP,
+        );
+
+        return {
+            transform: [{ translateY }],
+        };
+    });
 
     return (
-        <SafeAreaView>
-            <Animated.View style={[styles.wrapper__progress, barAnimatedStyle]}>
-                <Animated.View style={[styles.progress__image_wrapper, containerAnimatedStyle]}>
-                    <Image source={require('@assets/icons/cancel.png')} style={{ height: 30, width: 30 }} />
-                </Animated.View>
-                <Animated.View style={[styles.progress__progress_container, containerAnimatedStyle]}>
-                    <Animated.View style={[styles.progress__bar, progressAnimatedStyle]} />
-                </Animated.View>
-                <Animated.View style={[styles.progress__image_wrapper, containerAnimatedStyle]}>
-                    <Image source={require('@assets/icons/arrow_right.png')} style={{ height: 14, width: 34 }} />
-                </Animated.View>
+        <SafeAreaView style={styles.wrapper}>
+            <Animated.View style={[styles.wrapper__header, barAnimatedStyle]}>
+                <Image source={require('@assets/icons/cancel.png')} style={styles.header__imageExit} />
+                <View style={styles.header__progressBar}>
+                    <Animated.View style={[styles.progressBar__progress, progressAnimatedStyle]} />
+                </View>
+                <Image source={require('@assets/icons/arrow_right.png')} style={styles.header__imageNext} />
             </Animated.View>
-            <View style={styles.wrapper__content}>
-                <View style={styles.content__profile_wrapper}>
-                    <Image source={require('@assets/icons/profile.png')} style={styles.content__profile} />
-                </View>
-                <View style={styles.content__header}>
-                    <Text style={styles.content__header}>{constants.headerMain}</Text>
-                </View>
-                <View style={styles.content__cover_boxes}>
-                    <Image source={require('@assets/icons/bookCover.png')} style={styles.content__cover} />
-                    <View style={styles.wrapper__content_boxes}>
-                        <Box
-                            textHeader={constants.textRating}
-                            textInfo={constants.scoreRating}
-                            imageSource={require('@assets/icons/star.png')}
-                        />
-                        <Box
-                            textHeader={constants.textDuration}
-                            textInfo={constants.duration}
-                            imageSource={require('@assets/icons/clock.png')}
-                        />
-                        <Box
-                            textHeader={constants.textComplete}
-                            textInfo={constants.completePercent}
-                            imageSource={require('@assets/icons/book.png')}
-                        />
-                    </View>
-                </View>
-                <View style={styles.wrapper__content_genres}>
-                    <View style={styles.content__boxg}>
-                        <Text style={styles.content__textTag}>{constants.textMystic}</Text>
-                    </View>
-                    <View style={styles.content__boxg}>
-                        <Text style={styles.content__textTag}>{constants.textThriller}</Text>
-                    </View>
-                    <View style={styles.content__boxg}>
-                        <Text style={styles.content__textTag}>{constants.textRomance}</Text>
-                    </View>
-                </View>
-            </View>
             <Animated.ScrollView
-                style={styles.wrapper__content}
+                style={styles.wrapper__scroll}
                 animatedProps={scrollViewAnimatedProps}
                 showsVerticalScrollIndicator={false}
                 onScroll={handleScrollAnimated}
                 ref={scrollViewRef}
             >
                 <>
-                    <View style={[styles.content__coverSm, { height: windowHeight }]}>
-                        <View style={{ height: 670 }} />
+                    <View style={[styles.scroll__cover, { height: windowHeight }]}>
+                        <Animated.View style={staticAnimatedStyle} onLayout={handleStaticCoverContentLayout}>
+                            <Image source={require('@assets/icons/profile.png')} style={styles.cover__profileImage} />
+                            <Text style={styles.cover__headerText}>{constants.headerMain}</Text>
+                            <View style={styles.cover__coverContent}>
+                                <Image
+                                    source={require('@assets/icons/bookCover.png')}
+                                    style={styles.coverContent__imageCover}
+                                />
+                                <View style={styles.coverContent__boxes}>
+                                    <Box
+                                        textHeader={constants.textRating}
+                                        textInfo={constants.scoreRating}
+                                        imageSource={require('@assets/icons/star.png')}
+                                    />
+                                    <Box
+                                        textHeader={constants.textDuration}
+                                        textInfo={constants.duration}
+                                        imageSource={require('@assets/icons/clock.png')}
+                                    />
+                                    <Box
+                                        textHeader={constants.textComplete}
+                                        textInfo={constants.completePercent}
+                                        imageSource={require('@assets/icons/book.png')}
+                                    />
+                                </View>
+                            </View>
+                            <View style={styles.cover__genres}>
+                                <View style={styles.genres__genreWrapper}>
+                                    <Text style={styles.genreWrapper__genre}>{constants.textMystic}</Text>
+                                </View>
+                                <View style={styles.genres__genreWrapper}>
+                                    <Text style={styles.genreWrapper__genre}>{constants.textThriller}</Text>
+                                </View>
+                                <View style={styles.genres__genreWrapper}>
+                                    <Text style={styles.genreWrapper__genre}>{constants.textRomance}</Text>
+                                </View>
+                            </View>
+                            <Text style={styles.cover__textName}>{constants.textName}</Text>
+                            <Text style={styles.cover__textAuthor}>{constants.textAuthor}</Text>
+                        </Animated.View>
 
                         <View style={styles.cover__shortStory}>
                             <Animated.View style={[styles.shortStory__loader, shortStoryLoaderAnimatedStyle]}>
@@ -242,7 +267,7 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                     </View>
 
                     <Animated.View
-                        style={[styles.content__story, storyTextAnimatedStyle]}
+                        style={[styles.scroll__story, storyTextAnimatedStyle]}
                         // pointerEvents={isCoverCollapsed ? 'auto' : 'none'}
                         animatedProps={storyTextAnimatedProps}
                         onLayout={handleStoryLayout}
@@ -251,7 +276,6 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                             {constants.storyText}
                         </Text>
                     </Animated.View>
-                    <View style={{ height: 200, width: '100%' }} />
                 </>
             </Animated.ScrollView>
         </SafeAreaView>
@@ -260,51 +284,64 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
 
 const styles = StyleSheet.create({
     wrapper: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'flex-start',
+        backgroundColor: colors.SOFT_WHITE,
+    },
+    wrapper__header: {
+        position: 'absolute',
+        overflow: 'hidden',
+        flexDirection: 'row',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: colors.WHITE,
+        backgroundColor: colors.SOFT_WHITE,
+        marginHorizontal: 12,
+        paddingHorizontal: 5,
+        height: 50,
+        zIndex: 1000,
     },
-    content__profile: {
-        width: 24,
-        height: 24,
+    header__imageExit: {
+        height: 30,
+        width: 30,
     },
-    content__cover: {
+    header__progressBar: {
+        height: 10,
+        width: Dimensions.get('window').width / 1.6,
+    },
+    progressBar__progress: {
+        backgroundColor: colors.GRAY,
+        borderRadius: 20,
         height: '100%',
-        borderRadius: 16,
     },
-    content__profile_wrapper: {
-        alignItems: 'flex-end',
+    header__imageNext: {
+        height: 14,
+        width: 34,
     },
-    content__book_cover: {
-        alignItems: 'flex-start',
+    wrapper__scroll: {
+        backgroundColor: colors.SOFT_WHITE,
     },
-    content__boxpic: {
-        alignItems: 'flex-start',
+    scroll__cover: {
+        flexDirection: 'column',
+        padding: 20,
+    },
+    cover__profileImage: {
         width: 24,
         height: 24,
+        alignSelf: 'flex-end',
     },
-    content__header: {
-        fontSize: sizes.TEXT_BIG,
+    cover__headerText: {
+        fontSize: 32,
         fontFamily: 'RFDewi_Bold',
-        marginBottom: sizes.PADDING_LITTLE,
+        marginBottom: sizes.PADDING_BIG,
     },
-    content__cover_boxes: {
+    cover__coverContent: {
         flexDirection: 'row',
         alignItems: 'center',
         height: 250,
         justifyContent: 'space-between',
     },
-    content__white_box: {
-        width: 38,
-        height: 38,
-        backgroundColor: colors.WHITE,
-        borderRadius: 8,
-        justifyContent: 'center',
-        alignItems: 'center',
+    coverContent__imageCover: {
+        height: '100%',
     },
-    content__boxg: {
+    genres__genreWrapper: {
         marginTop: sizes.PADDING_SMALL,
         backgroundColor: colors.GREY_BOX,
         borderRadius: 12,
@@ -313,63 +350,25 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    content__textTag: {
-        fontSize: sizes.TEXT_SMALL,
+    genreWrapper__genre: {
+        fontSize: 14,
         fontFamily: 'RFDewi_Semibold',
         color: colors.LIGHT_GREY,
     },
-    wrapper__content: {
-        width: '100%',
-        paddingHorizontal: sizes.PADDING_BIG,
-    },
-    wrapper__content_boxes: {
-        flex: 1,
+    coverContent__boxes: {
         alignItems: 'center',
         justifyContent: 'space-between',
         height: '100%',
-        paddingLeft: 20,
     },
-    wrapper__content_genres: {
+    cover__genres: {
         width: '100%',
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'space-between',
-    },
-    wrapper__progress: {
-        position: 'absolute',
-        overflow: 'hidden',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginHorizontal: 12,
-        backgroundColor: colors.SOFT_WHITE,
-        paddingHorizontal: 5,
-        height: 50,
-        zIndex: 1000,
-    },
-    progress__progress_container: {
-        height: 10,
-        width: Dimensions.get('window').width / 1.6,
-    },
-    progress__image_wrapper: {
-        height: 40,
-        width: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    progress__bar: {
-        backgroundColor: colors.GRAY,
-        borderRadius: 20,
-        height: '100%',
-    },
-    content__cover: {
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        padding: 20,
     },
     cover__shortStory: {
-        flex: 1,
-        alignSelf: 'stretch',
+        marginTop: 10,
+        marginHorizontal: 0,
     },
     shortStory__loader: {
         position: 'absolute',
@@ -378,19 +377,31 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     shortStory__text: {
-        height: '100%',
         width: '100%',
-        fontSize: sizes.TEXT_MEDIUM,
+        height: '100%',
+        lineHeight: 23,
+        fontSize: sizes.TEXT_SMALL,
         fontFamily: 'RFDewi_Regular',
     },
-    content__story: {
+    scroll__story: {
         paddingHorizontal: 20,
-        paddingTop: 28,
+        paddingTop: Dimensions.get('window').width * 0.1,
     },
     story_text: {
-        fontSize: sizes.TEXT_MEDIUM,
+        fontSize: sizes.TEXT_SMALL,
         fontFamily: 'RFDewi_Regular',
+        lineHeight: 23,
         width: '100%',
+    },
+    cover__textName: {
+        marginTop: 20,
+        fontSize: sizes.TEXT_BIG,
+        fontFamily: 'RFDewi_Bold',
+    },
+    cover__textAuthor: {
+        marginTop: 20,
+        fontSize: sizes.TEXT_VERY_LITTLE,
+        fontFamily: 'RFDewi_Regular',
     },
 });
 

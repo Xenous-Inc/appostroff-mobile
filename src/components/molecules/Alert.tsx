@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     wrapper__pressable: {
         height: '100%',
         width: '100%',
-        backgroundColor: colors.ALERT_BACKGROUND,
+        backgroundColor: colors.STORY_BACKGROUND,
         position: 'absolute',
         alignItems: 'center',
         justifyContent: 'center',

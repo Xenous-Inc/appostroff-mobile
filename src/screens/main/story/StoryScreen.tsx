@@ -156,9 +156,6 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
         return { opacity };
     }, [collapseProgress]);
 
-
-    const insets = useSafeAreaInsets();
-
     return (
         <SafeAreaView>
             <Animated.View style={[styles.wrapper__progress, barAnimatedStyle]}>
@@ -219,7 +216,7 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                 ref={scrollViewRef}
             >
                 <>
-                    <View style={[styles.content__cover, { height: windowHeight }]}>
+                    <View style={[styles.content__coverSm, { height: windowHeight }]}>
                         <View style={{ height: 670 }} />
 
                         <View style={styles.cover__shortStory}>
@@ -337,6 +334,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'space-between',
+    },
     wrapper__progress: {
         position: 'absolute',
         overflow: 'hidden',
@@ -363,9 +361,6 @@ const styles = StyleSheet.create({
         backgroundColor: colors.GRAY,
         borderRadius: 20,
         height: '100%',
-    },
-    wrapper__content: {
-        backgroundColor: colors.SOFT_WHITE,
     },
     content__cover: {
         flexDirection: 'column',

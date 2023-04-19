@@ -17,7 +17,7 @@ const Stack = createNativeStackNavigator<AppStackParams>();
 const AppNavigator: React.FC = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName={Stacks.MAIN} screenOptions={{ headerShown: false }}>
+            <Stack.Navigator initialRouteName={Stacks.AUTH} screenOptions={{ headerShown: false, animation: 'fade' }}>
                 <Stack.Screen key={Stacks.AUTH} name={Stacks.AUTH} component={AuthStack} />
                 <Stack.Screen key={Stacks.MAIN} name={Stacks.MAIN} component={MainStack} />
                 <Stack.Screen key={Stacks.PROFILE} name={Stacks.PROFILE} component={ProfileStack} />

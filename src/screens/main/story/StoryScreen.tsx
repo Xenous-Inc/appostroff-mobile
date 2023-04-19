@@ -1,8 +1,18 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Dimensions, Image, LayoutChangeEvent, ScrollViewProps, StyleSheet, Text, View, ViewProps } from 'react-native';
+import {
+    Dimensions,
+    Image,
+    LayoutChangeEvent,
+    Pressable,
+    ScrollViewProps,
+    StyleSheet,
+    Text,
+    View,
+    ViewProps,
+} from 'react-native';
 import colors from '@styles/colors';
 import { MainStackParams } from '@navigation/stacks/MainStack';
-import { Screens } from '@navigation/constants';
+import { Screens, Stacks } from '@navigation/constants';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
     Extrapolation,
@@ -20,8 +30,15 @@ import { LoaderItemStyle } from 'expo-skeleton-loader/lib/Constants';
 import sizes from '@styles/sizes';
 import constants from '@utils/constants';
 import Box from '@components/molecules/Box';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { AppStackParams } from '@navigation/AppNavigator';
 
-const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Screens.Main.STORY>> = () => {
+const StoryScreen: React.FC<
+    CompositeScreenProps<
+        NativeStackScreenProps<MainStackParams, typeof Screens.Main.STORY>,
+        NativeStackScreenProps<AppStackParams>
+    >
+> = props => {
     // window safe area height
     const insets = useSafeAreaInsets();
 
@@ -98,6 +115,16 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
         (event: LayoutChangeEvent) =>
             event.target.measure((_x, _y, width, height, _pageX, pageY) => {
                 setStaticContentHeight(height);
+                setShortStoryLines(
+                    Math.floor(
+                        (windowHeight -
+                            staticContentHeight -
+                            insets.top -
+                            insets.bottom -
+                            styles.scroll__cover.padding * 2) /
+                            (styles.shortStory__text.fontSize * 1.7),
+                    ),
+                );
             }),
 
         [windowHeight, insets.top, insets.bottom],
@@ -113,16 +140,6 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                     windowHeight + insets.top + insets.bottom - pageY + styles.scroll__story.paddingTop,
                 );
                 setShortStoryLength(Math.ceil((width * height * 1.5) / styles.shortStory__text.fontSize ** 2));
-                setShortStoryLines(
-                    Math.floor(
-                        (windowHeight -
-                            staticContentHeight -
-                            insets.top -
-                            insets.bottom -
-                            styles.scroll__cover.padding * 2) /
-                            (styles.shortStory__text.fontSize * 1.5),
-                    ),
-                );
                 isShortStoryMeasured.value = true;
             }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -204,7 +221,16 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                 <>
                     <View style={[styles.scroll__cover, { height: windowHeight }]}>
                         <Animated.View style={staticAnimatedStyle} onLayout={handleStaticCoverContentLayout}>
-                            <Image source={require('@assets/icons/profile.png')} style={styles.cover__profileImage} />
+                            <Pressable
+                                onPress={() => {
+                                    props.navigation.navigate(Stacks.PROFILE, { screen: Screens.Profile.PROFILE });
+                                }}
+                            >
+                                <Image
+                                    source={require('@assets/icons/profile.png')}
+                                    style={styles.cover__profileImage}
+                                />
+                            </Pressable>
                             <Text style={styles.cover__headerText}>{constants.headerMain}</Text>
                             <View style={styles.cover__coverContent}>
                                 <Image
@@ -257,7 +283,14 @@ const StoryScreen: React.FC<NativeStackScreenProps<MainStackParams, typeof Scree
                             <Animated.Text
                                 style={[styles.shortStory__text, shortStoryTextAnimatedStyle]}
                                 onLayout={handleShortStoryLayout}
-                                numberOfLines={shortStoryLines}
+                                numberOfLines={Math.floor(
+                                    (windowHeight -
+                                        staticContentHeight -
+                                        insets.top -
+                                        insets.bottom -
+                                        styles.scroll__cover.padding * 2) /
+                                        (styles.shortStory__text.fontSize * 1.3),
+                                )}
                                 ellipsizeMode={'tail'}
                                 textBreakStrategy={'balanced'}
                             >
@@ -329,7 +362,7 @@ const styles = StyleSheet.create({
     },
     cover__headerText: {
         fontSize: 32,
-        fontFamily: 'RFDewi_Bold',
+        fontFamily: 'RFDewiExpanded_Bold',
         marginBottom: sizes.PADDING_BIG,
     },
     cover__coverContent: {
@@ -340,6 +373,7 @@ const styles = StyleSheet.create({
     },
     coverContent__imageCover: {
         height: '100%',
+        width: '45%',
     },
     genres__genreWrapper: {
         marginTop: sizes.PADDING_SMALL,
@@ -352,13 +386,14 @@ const styles = StyleSheet.create({
     },
     genreWrapper__genre: {
         fontSize: 14,
-        fontFamily: 'RFDewi_Semibold',
+        fontFamily: 'RFDewiExtended_Semibold',
         color: colors.LIGHT_GREY,
     },
     coverContent__boxes: {
         alignItems: 'center',
         justifyContent: 'space-between',
         height: '100%',
+        width: '50%',
     },
     cover__genres: {
         width: '100%',
@@ -381,27 +416,27 @@ const styles = StyleSheet.create({
         height: '100%',
         lineHeight: 23,
         fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Regular',
+        fontFamily: 'RFDewiExtended_Regular',
     },
     scroll__story: {
         paddingHorizontal: 20,
-        paddingTop: Dimensions.get('window').width * 0.1,
+        paddingTop: Dimensions.get('window').width * 0.12,
     },
     story_text: {
         fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Regular',
+        fontFamily: 'RFDewiExtended_Regular',
         lineHeight: 23,
         width: '100%',
     },
     cover__textName: {
         marginTop: 20,
         fontSize: sizes.TEXT_BIG,
-        fontFamily: 'RFDewi_Bold',
+        fontFamily: 'RFDewiExpanded_Bold',
     },
     cover__textAuthor: {
         marginTop: 20,
         fontSize: sizes.TEXT_VERY_LITTLE,
-        fontFamily: 'RFDewi_Regular',
+        fontFamily: 'RFDewiExtended_Regular',
     },
 });
 

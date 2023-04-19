@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
     },
     content__text_header: {
         fontSize: sizes.TEXT_VERY_LITTLE,
-        fontFamily: 'RFDewi_Semibold',
+        fontFamily: 'RFDewiExtended_Semibold',
         color: colors.LIGHT_GREY,
     },
     content__text_info: {
         fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Semibold',
+        fontFamily: 'RFDewiExtended_Semibold',
         color: colors.BLACK,
     },
     white_box__image: {

@@ -47,7 +47,7 @@ export default {
     instructionVerification: 'Мы отправили одноразовый код \nна ваш телефон',
     buttonTextContinue: 'Продолжить',
     buttonTextRetry: 'Выслать повторно',
-    cellCount: 5,
+    cellCount: 4,
     headerMain: 'Appostrof',
     textRating: 'Рейтинг',
     scoreRating: '8.9/10',
@@ -63,6 +63,18 @@ export default {
     noText: 'Нет',
     textName: 'Руководство по хорошей жизни',
     textAuthor: 'William B.',
+    name: 'Владислав Волков',
+    boxInterests: 'Интересы',
+    boxSettin: 'Настройки',
+    infoRead: 'Прочитано',
+    infoCount: '78',
+    infoAllQuotes: 'Цитат',
+    infoQuotesCount: '12 131',
+    infoStreaks: 'Стрики',
+    infoStreakLevel: 'Мидл',
+    quotesHeader: 'Мои цитаты',
+    buttonTextQuotes: 'Смотреть все',
+    quotesSearch: 'Найти цитату',
     storyText:
         'Отец мой Андрей Петрович Гринев в молодости своей служил при графе Минихе и вышел в ' +
         'отставку премьер-майором в 17.. году. С тех пор жил он в своей Симбирской деревне, где и женился' +

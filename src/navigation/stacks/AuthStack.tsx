@@ -13,7 +13,10 @@ const Stack = createNativeStackNavigator<AuthStackParams>();
 
 const AuthStack: React.FC = () => {
     return (
-        <Stack.Navigator initialRouteName={Screens.Auth.SIGN_IN} screenOptions={{ headerShown: false }}>
+        <Stack.Navigator
+            initialRouteName={Screens.Auth.SIGN_IN}
+            screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 100 }}
+        >
             <Stack.Screen key={Screens.Auth.SIGN_IN} name={Screens.Auth.SIGN_IN} component={SignInScreen} />
             <Stack.Screen
                 key={Screens.Auth.VERIFICATION}

@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
         width: 28,
     },
     content__textCountry: {
-        fontFamily: 'RFDewi_Semibold',
+        fontFamily: 'RFDewiExtended_Semibold',
         fontSize: sizes.TEXT_SMALL,
         marginLeft: 20,
     },

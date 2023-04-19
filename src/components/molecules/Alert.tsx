@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     wrapper__pressable: {
         height: '100%',
         width: '100%',
-        backgroundColor: colors.STORY_BACKGROUND,
+        backgroundColor: colors.GRAY,
         position: 'absolute',
         alignItems: 'center',
         justifyContent: 'center',
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     },
     alertDialog__exitText: {
         fontSize: sizes.TEXT_LITTLE,
-        fontFamily: 'RFDewi_Regular',
+        fontFamily: 'RFDewiExtended_Regular',
         marginVertical: sizes.PADDING_MEDIUM,
     },
     alertDialog__contentText: {
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         marginVertical: sizes.PADDING_MEDIUM,
     },
     content_text__actionText: {
-        fontFamily: 'RFDewi_Bold',
+        fontFamily: 'RFDewiExtended_Bold',
         fontSize: sizes.TEXT_SMALL,
     },
 });

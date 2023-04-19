@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     },
     wrapper__header: {
         fontSize: sizes.TEXT_BIG,
-        fontFamily: 'RFDewi_Bold',
+        fontFamily: 'RFDewiExtended_Bold',
         marginBottom: sizes.PADDING_SMALL,
     },
     wrapper__pooling_container: {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     },
     wrapper__text_instruction: {
         fontSize: sizes.TEXT_LITTLE,
-        fontFamily: 'RFDewi_Regular',
+        fontFamily: 'RFDewiExtended_Regular',
         color: colors.TEXT_INSTRUCTION,
         width: 280,
     },
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     },
     phone_input__text: {
         marginLeft: 20,
-        fontFamily: 'RFDewi_Semibold',
+        fontFamily: 'RFDewiExtended_Semibold',
         fontSize: 16,
     },
     phone_input__separator: {
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 48,
         fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Semibold',
+        fontFamily: 'RFDewiExtended_Semibold',
     },
     wrapper__button_container: {
         width: '100%',

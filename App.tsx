@@ -4,9 +4,12 @@ import { useFonts } from 'expo-font';
 
 export default function App() {
     const [fontsLoaded] = useFonts({
-        RFDewi_Bold: require('@assets/fonts/RFDewi-Bold.ttf'),
-        RFDewi_Regular: require('@assets/fonts/RFDewi-Regular.ttf'),
-        RFDewi_Semibold: require('@assets/fonts/RFDewi-Semibold.ttf'),
+        RFDewiExpanded_Bold: require('@assets/fonts/RFDewiExpanded-Bold.ttf'),
+        RFDewiExpanded_Regular: require('@assets/fonts/RFDewiExpanded-Regular.ttf'),
+        RFDewiExpanded_Semibold: require('@assets/fonts/RFDewiExpanded-Semibold.ttf'),
+        RFDewiExtended_Bold: require('@assets/fonts/RFDewiExtended-Bold.ttf'),
+        RFDewiExtended_Regular: require('@assets/fonts/RFDewiExtended-Regular.ttf'),
+        RFDewiExtended_Semibold: require('@assets/fonts/RFDewiExtended-Semibold.ttf'),
     });
 
     if (!fontsLoaded) {

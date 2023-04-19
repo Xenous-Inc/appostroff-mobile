@@ -77,12 +77,12 @@ const styles = StyleSheet.create({
     },
     content__header: {
         fontSize: sizes.TEXT_BIG,
-        fontFamily: 'RFDewi_Bold',
+        fontFamily: 'RFDewiExtended_Bold',
         marginBottom: sizes.PADDING_SMALL,
     },
     content__text_instruction: {
         fontSize: sizes.TEXT_LITTLE,
-        fontFamily: 'RFDewi_Regular',
+        fontFamily: 'RFDewiExtended_Regular',
         color: colors.TEXT_INSTRUCTION,
         width: 280,
     },
@@ -96,7 +96,8 @@ const styles = StyleSheet.create({
     content__code_field: {
         height: 55.8,
         marginTop: 31,
-        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        justifyContent: 'space-around',
     },
     content__render_item: {
         height: 55.8,
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         textAlign: 'center',
         backgroundColor: colors.SOFT_GREY,
-        fontFamily: 'RFDewi_Semibold',
+        fontFamily: 'RFDewiExtended_Semibold',
     },
 });
 

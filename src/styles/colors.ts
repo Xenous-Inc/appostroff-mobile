@@ -7,12 +7,18 @@ const colors = {
     SOFT_WHITE: '#FFFDF9',
     SOFT_GREY: '#F9F9F9',
     SKELETON: '#F0F0F0',
-
+    LIGHT_GREY: '#939393',
+    GREY_BOX: '#F5F5F5',
+    GREY_INFO: '#7E86A3',
+    GREY_SEPARATOR: '#E6E6E6',
+    YELLOW_QUOTE: '#FED32C',
+    GREEN_QUOTE: '#5AFFAF',
+    PURPLE_QUOTE: '#5E5DFD',
+    BLUE_QUOTE: '#5FB0FB',
+    GREY_SEARCH: '#C8C8C8',
     TEXT_PRIMARY: '#989898',
     TEXT_INSTRUCTION: '#4C4C4C',
     SEPARATOR: '#EFEFEF',
-    GREY_BOX: '#F5F5F5',
-    LIGHT_GREY: '#939393',
 };
 
 export const namedColors = new Map<string, string>([

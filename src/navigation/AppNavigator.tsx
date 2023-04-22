@@ -5,6 +5,7 @@ import { Stacks } from './constants';
 import AuthStack, { AuthStackParams } from './stacks/AuthStack';
 import MainStack, { MainStackParams } from './stacks/MainStack';
 import ProfileStack, { ProfileStackParams } from './stacks/ProfileStack';
+import durations from '@styles/durations';
 
 export type AppStackParams = {
     [Stacks.AUTH]: NavigatorScreenParams<AuthStackParams>;
@@ -17,7 +18,10 @@ const Stack = createNativeStackNavigator<AppStackParams>();
 const AppNavigator: React.FC = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName={Stacks.AUTH} screenOptions={{ headerShown: false, animation: 'fade' }}>
+            <Stack.Navigator
+                initialRouteName={Stacks.AUTH}
+                screenOptions={{ headerShown: false, animation: 'fade', animationDuration: durations.MEDIUM }}
+            >
                 <Stack.Screen key={Stacks.AUTH} name={Stacks.AUTH} component={AuthStack} />
                 <Stack.Screen key={Stacks.MAIN} name={Stacks.MAIN} component={MainStack} />
                 <Stack.Screen key={Stacks.PROFILE} name={Stacks.PROFILE} component={ProfileStack} />

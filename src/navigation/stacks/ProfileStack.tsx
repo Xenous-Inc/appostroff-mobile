@@ -4,6 +4,7 @@ import ProfileScreen from '@screens/profile/profile/ProfileScreen';
 import { Screens } from '../constants';
 import QuotesScreen from '@screens/profile/quotes/QuoteScreen';
 import SettingsScreen from '@screens/profile/settings/SettingsScreen';
+import durations from '@styles/durations';
 
 export type ProfileStackParams = {
     [Screens.Profile.PROFILE]: undefined;
@@ -15,10 +16,13 @@ const Stack = createNativeStackNavigator<ProfileStackParams>();
 
 const ProfileStack: React.FC = () => {
     return (
-        <Stack.Navigator initialRouteName={Screens.Profile.PROFILE} screenOptions={{ headerShown: false }}>
+        <Stack.Navigator
+            initialRouteName={Screens.Profile.PROFILE}
+            screenOptions={{ headerShown: false, animation: 'fade', animationDuration: durations.MEDIUM }}
+        >
             <Stack.Screen key={Screens.Profile.PROFILE} name={Screens.Profile.PROFILE} component={ProfileScreen} />
             <Stack.Screen key={Screens.Profile.SETTINGS} name={Screens.Profile.SETTINGS} component={SettingsScreen} />
-            <Stack.Screen key={Screens.Profile.QUOTES} name={Screens.Profile.SETTINGS} component={QuotesScreen} />
+            <Stack.Screen key={Screens.Profile.QUOTES} name={Screens.Profile.QUOTES} component={QuotesScreen} />
         </Stack.Navigator>
     );
 };

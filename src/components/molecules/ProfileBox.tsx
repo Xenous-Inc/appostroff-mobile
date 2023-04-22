@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     },
     content__text: {
         fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Bold',
+        fontFamily: 'RFDewiExpanded_Bold',
         color: colors.BLACK,
     },
     box__image: {

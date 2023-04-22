@@ -69,10 +69,12 @@ const StoryScreen: React.FC<
     const barAnimatedStyle = useAnimatedStyle(() => {
         const opacity = interpolate(collapseProgress.value, [0.8, 1], [0, 1], Extrapolation.CLAMP);
         const width = windowWidth - styles.wrapper__header.marginHorizontal * 2;
+        const height = interpolate(collapseProgress.value, [0.5, 0.6], [0, 50], Extrapolation.CLAMP);
 
         return {
             width,
             opacity,
+            height,
             marginTop: insets.top,
         };
     });
@@ -224,6 +226,7 @@ const StoryScreen: React.FC<
                             <Pressable
                                 onPress={() => {
                                     props.navigation.navigate(Stacks.PROFILE, { screen: Screens.Profile.PROFILE });
+                                    console.log(123);
                                 }}
                             >
                                 <Image
@@ -328,7 +331,6 @@ const styles = StyleSheet.create({
         backgroundColor: colors.SOFT_WHITE,
         marginHorizontal: 12,
         paddingHorizontal: 5,
-        height: 50,
         zIndex: 1000,
     },
     header__imageExit: {

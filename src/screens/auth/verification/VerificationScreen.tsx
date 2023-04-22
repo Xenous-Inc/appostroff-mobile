@@ -58,6 +58,7 @@ const VerificationScreen: React.FC<
                     mode={Button.Mode.Blank}
                     onPress={() => {
                         props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
+                        console.log('123');
                     }}
                 />
             </View>

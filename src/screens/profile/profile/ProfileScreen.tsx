@@ -1,16 +1,26 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CompositeScreenProps } from '@react-navigation/native';
-import React from 'react';
+import React, { useMemo, useRef } from 'react';
 import { AppStackParams } from '@navigation/AppNavigator';
-import { StyleSheet, Text, View, Image, Dimensions, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, Pressable, ScrollViewProps } from 'react-native';
 import { Screens } from '@navigation/constants';
 import { ProfileStackParams } from '@navigation/stacks/ProfileStack';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import constants from '@utils/constants';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stacks } from '@navigation/constants';
 import ProfileBox from '@components/molecules/ProfileBox';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import Quote from '@components/molecules/Quote';
+import Animated, {
+    Extrapolation,
+    interpolate,
+    useAnimatedProps,
+    useAnimatedScrollHandler,
+    useAnimatedStyle,
+    useSharedValue,
+} from 'react-native-reanimated';
 
 const ProfileScreen: React.FC<
     CompositeScreenProps<
@@ -20,64 +30,115 @@ const ProfileScreen: React.FC<
 > = props => {
     const insets = useSafeAreaInsets();
 
+    const windowHeight = useMemo(() => Dimensions.get('screen').height - insets.top - insets.bottom, [insets]);
+    const windowWidth = useMemo(() => Dimensions.get('screen').width - insets.left - insets.right, [insets]);
+
+    const scrollViewRef = useRef<Animated.ScrollView>(null);
+
+    // defines progress of collapsing: from 0 to 1
+    const collapseProgress = useSharedValue(0);
+    // defines progress of scrolling: from 0 to 1
+    const scrollProgress = useSharedValue(0);
+
+    const scrollViewAnimatedProps = useAnimatedProps<ScrollViewProps>(
+        () => ({
+            pagingEnabled: collapseProgress.value <= 0.98,
+        }),
+        [],
+    );
+
+    const handleScrollAnimated = useAnimatedScrollHandler(
+        event => {
+            collapseProgress.value = Math.min(event.contentOffset.y / windowHeight, 1);
+        },
+        [windowHeight],
+    );
+
     return (
-        <View style={[styles.wrapper, { paddingTop: insets.top * 1.5 }]}>
-            <View style={styles.wrapper__content}>
-                <View style={styles.content__iconsWrapper}>
-                    <Pressable
-                        onPress={() => {
-                            props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
-                        }}
-                    >
-                        <Image source={require('@assets/icons/back.png')} style={styles.content__icons} />
-                    </Pressable>
-                    <Image source={require('@assets/icons/search.png')} style={styles.content__icons} />
-                </View>
-                <View style={styles.wrapper__profilePic}>
-                    <Image source={require('@assets/icons/profilePic.png')} style={styles.content__profilepic} />
-                </View>
-                <View style={styles.wrapper__name}>
-                    <Text style={styles.content__name}>{constants.name}</Text>
-                </View>
-                <View style={styles.wrapper__content_boxes}>
-                    <ProfileBox
-                        textHeader={constants.boxInterests}
-                        imageSource={require('@assets/icons/searchStars.png')}
+        <SafeAreaView style={{ backgroundColor: colors.WHITE }}>
+            <Animated.FlatList
+                ListHeaderComponent={
+                    <Animated.View style={[styles.wrapper__content, { paddingTop: insets.top }]}>
+                        <View style={styles.content__iconsWrapper}>
+                            <Pressable
+                                onPress={() => {
+                                    props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
+                                }}
+                            >
+                                <Image source={require('@assets/icons/back.png')} style={styles.content__icons} />
+                            </Pressable>
+                            <Image source={require('@assets/icons/search.png')} style={styles.content__icons} />
+                        </View>
+                        <View style={styles.wrapper__profilePic}>
+                            <Image source={require('@assets/icons/avatar.png')} style={styles.content__profilepic} />
+                        </View>
+                        <View style={styles.wrapper__name}>
+                            <Text style={styles.content__name}>{constants.name}</Text>
+                        </View>
+                        <View style={styles.wrapper__content_boxes}>
+                            <ProfileBox
+                                textHeader={constants.boxInterests}
+                                imageSource={require('@assets/icons/searchStars.png')}
+                            />
+                            <ProfileBox
+                                textHeader={constants.boxSettin}
+                                imageSource={require('@assets/icons/settings.png')}
+                            />
+                        </View>
+                        <View style={styles.wrapper__boxInfo}>
+                            <View>
+                                <Text style={styles.content__textInfo}>{constants.infoRead}</Text>
+                                <Text style={styles.content__textTag}>{constants.infoCount}</Text>
+                            </View>
+                            <View style={styles.content__separator} />
+                            <View>
+                                <Text style={styles.content__textInfo}>{constants.infoAllQuotes}</Text>
+                                <Text style={styles.content__textTag}>{constants.infoQuotesCount}</Text>
+                            </View>
+                            <View style={styles.content__separator} />
+                            <View>
+                                <Text style={styles.content__textInfo}>{constants.infoStreaks}</Text>
+                                <Text style={styles.content__textTag}>{constants.infoStreakLevel}</Text>
+                            </View>
+                        </View>
+                        <View style={styles.wrapper__quotes}>
+                            <Text style={styles.content__quotesHeader}>{constants.quotesHeader}</Text>
+                            <Pressable
+                                onPress={() => {
+                                    props.navigation.navigate(Stacks.PROFILE, { screen: Screens.Profile.QUOTES });
+                                }}
+                            >
+                                <Text style={styles.content__quotesAllText}>{constants.quotesAllText}</Text>
+                            </Pressable>
+                        </View>
+                    </Animated.View>
+                }
+                style={styles.scroll}
+                showsVerticalScrollIndicator={false}
+                onScroll={handleScrollAnimated}
+                data={constants.QUOTES_DATA}
+                nestedScrollEnabled={false}
+                renderItem={({ item }) => (
+                    <Quote
+                        textName={item.textName}
+                        textWriter={item.textWriter}
+                        textQuote={item.textQuote}
+                        circleColour={'#5AFFAF'}
+                        collapseProgress={collapseProgress}
+                        isLast={item.isLast}
+                        type={Quote.QuoteType.ProfileType}
                     />
-                    <ProfileBox textHeader={constants.boxSettin} imageSource={require('@assets/icons/settings.png')} />
-                </View>
-                <View style={styles.wrapper__boxInfo}>
-                    <View>
-                        <Text style={styles.content__textInfo}>{constants.infoRead}</Text>
-                        <Text style={styles.content__textTag}>{constants.infoCount}</Text>
-                    </View>
-                    <View style={styles.content__separator} />
-                    <View>
-                        <Text style={styles.content__textInfo}>{constants.infoAllQuotes}</Text>
-                        <Text style={styles.content__textTag}>{constants.infoQuotesCount}</Text>
-                    </View>
-                    <View style={styles.content__separator} />
-                    <View>
-                        <Text style={styles.content__textInfo}>{constants.infoStreaks}</Text>
-                        <Text style={styles.content__textTag}>{constants.infoStreakLevel}</Text>
-                    </View>
-                </View>
-                <View style={styles.wrapper__quotes}>
-                    <View style={styles.wrapper__quotes}>
-                        <Text style={styles.content__quotesHeader}>{constants.quotesHeader}</Text>
-                    </View>
-                </View>
-            </View>
-        </View>
+                )}
+            />
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
+    scroll: {
+        backgroundColor: colors.WHITE,
+    },
     wrapper: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
         backgroundColor: colors.WHITE,
     },
     content__icons: {
@@ -100,7 +161,7 @@ const styles = StyleSheet.create({
     },
     content__name: {
         fontSize: sizes.TEXT_MEDIUM_BIG,
-        fontFamily: 'RFDewi_Bold',
+        fontFamily: 'RFDewiExtended_Bold',
         marginBottom: sizes.PADDING_LITTLE,
     },
     wrapper__name: {
@@ -114,11 +175,14 @@ const styles = StyleSheet.create({
     },
     wrapper__quotes: {
         flexDirection: 'row',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 44,
+        marginBottom: sizes.PADDING_BIG,
     },
     content__quotesHeader: {
         fontSize: sizes.TEXT_MEDIUM,
-        fontFamily: 'RFDewi_Bold',
+        fontFamily: 'RFDewiExtended_Bold',
         color: colors.BLACK,
     },
     content__aaa: {
@@ -132,12 +196,12 @@ const styles = StyleSheet.create({
     },
     content__textTag: {
         fontSize: sizes.TEXT_MEDIUM_BIG,
-        fontFamily: 'RFDewi_Semibold',
+        fontFamily: 'RFDewiExpanded_Semibold',
         color: colors.BLACK,
     },
     content__textInfo: {
         fontSize: sizes.TEXT_VERY_LITTLE,
-        fontFamily: 'RFDewi_Semibold',
+        fontFamily: 'RFDewiExtended_Semibold',
         color: colors.GREY_INFO,
     },
     content__separator: {
@@ -147,6 +211,7 @@ const styles = StyleSheet.create({
     },
     wrapper__content: {
         width: '100%',
+        paddingHorizontal: 24,
     },
     wrapper__content_boxes: {
         flexDirection: 'row',
@@ -159,6 +224,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginTop: sizes.PADDING_SMALL,
+    },
+    content__quotesAllText: {
+        fontSize: sizes.TEXT_SMALL,
+        fontFamily: 'RFDewiExtended_Semibold',
     },
 });
 

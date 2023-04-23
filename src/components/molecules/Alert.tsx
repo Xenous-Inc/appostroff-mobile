@@ -50,14 +50,14 @@ const Alert: React.FC<IAlert> = props => {
                             BackHandler.exitApp();
                         }}
                     >
-                        <Text style={styles.content_text__actionText}>{constants.yesText}</Text>
+                        <Text style={styles.contentText__actionText}>{constants.yesText}</Text>
                     </Pressable>
                     <Pressable
                         onPress={() => {
                             setShowAlert(!showAlert);
                         }}
                     >
-                        <Text style={styles.content_text__actionText}>{constants.noText}</Text>
+                        <Text style={styles.contentText__actionText}>{constants.noText}</Text>
                     </Pressable>
                 </View>
             </View>
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginVertical: sizes.PADDING_MEDIUM,
     },
-    content_text__actionText: {
+    contentText__actionText: {
         fontFamily: 'RFDewiExtended_Bold',
         fontSize: sizes.TEXT_SMALL,
     },

@@ -25,7 +25,6 @@ const Dropdown: React.FC<IDropdown> = props => {
     const insets = useSafeAreaInsets();
 
     const windowHeight = useMemo(() => Dimensions.get('window').height - insets.top - insets.bottom, [insets]);
-    const windowWidth = useMemo(() => Dimensions.get('screen').width - insets.left - insets.right, [insets]);
 
     const collapse = useSharedValue(0);
     const [chosen, setChosen] = useState(0);
@@ -69,7 +68,7 @@ const Dropdown: React.FC<IDropdown> = props => {
                 }
             />
             <View style={styles.content__separator} />
-            <Animated.View style={[styles.content__countries_list, animatedStyle]}>
+            <Animated.View style={[styles.content__countriesList, animatedStyle]}>
                 <FlatList
                     data={constants.DATA}
                     renderItem={({ item, index }) => (
@@ -78,7 +77,6 @@ const Dropdown: React.FC<IDropdown> = props => {
                             onPress={() => {
                                 setChosen(index);
                                 changeHeight();
-                                console.log(item.id);
                             }}
                         />
                     )}
@@ -119,10 +117,20 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         marginTop: 30,
     },
+    content__switcherWrapper: {
+        marginRight: 20,
+    },
+    switcherWrapper__imageSwitcher: {
+        height: 28,
+        width: 28,
+    },
     content__separator: {
         width: '100%',
         height: 2,
         backgroundColor: colors.SEPARATOR,
+    },
+    content__countriesList: {
+        backgroundColor: colors.SOFT_GREY,
     },
     renderItem: {
         flexDirection: 'row',
@@ -141,20 +149,11 @@ const styles = StyleSheet.create({
         height: 32,
         width: 27,
     },
-    switcherWrapper__imageSwitcher: {
-        height: 28,
-        width: 28,
-    },
+
     content__textCountry: {
         fontFamily: 'RFDewiExtended_Semibold',
         fontSize: sizes.TEXT_SMALL,
         marginLeft: 20,
-    },
-    content__countries_list: {
-        backgroundColor: colors.SOFT_GREY,
-    },
-    content__switcherWrapper: {
-        marginRight: 20,
     },
 });
 

@@ -76,8 +76,8 @@ const Button: React.FC<IButton> & { Mode: typeof Mode } = props => {
                 style={[
                     styles.wrapper__content,
                     containerStyle,
-                    styles.wrapper_property_padding,
-                    disabled && styles.wrapper_state_disabled,
+                    styles.wrapper_propertyPadding,
+                    disabled && styles.wrapper_stateDisabled,
                     { borderColor },
                     animatedStyle,
                 ]}
@@ -111,20 +111,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    wrapper_property_padding: {
-        padding: 0,
-        paddingStart: 0,
-        paddingLeft: 0,
-        paddingTop: 0,
-        paddingEnd: 0,
-        paddingRight: 0,
-        paddingBottom: 0,
-        paddingHorizontal: 0,
-        paddingVertical: 0,
-    },
-    wrapper_state_disabled: {
-        opacity: 0.56,
-    },
     wrapper__content: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -135,6 +121,20 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 8,
         marginVertical: 4,
+    },
+    wrapper_propertyPadding: {
+        padding: 0,
+        paddingStart: 0,
+        paddingLeft: 0,
+        paddingTop: 0,
+        paddingEnd: 0,
+        paddingRight: 0,
+        paddingBottom: 0,
+        paddingHorizontal: 0,
+        paddingVertical: 0,
+    },
+    wrapper_stateDisabled: {
+        opacity: 0.56,
     },
     content__text: {
         backgroundColor: colors.TRANSPARENT,

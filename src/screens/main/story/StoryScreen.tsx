@@ -136,8 +136,6 @@ const StoryScreen: React.FC<
     const handleShortStoryLayout = useCallback(
         (event: LayoutChangeEvent) =>
             event.target.measure((_x, _y, width, height, _pageX, pageY) => {
-                //console.log('height ' + height);
-                //console.log('winHeight ' + (windowHeight + insets.top + insets.bottom));
                 setShortStoryTextShiftBottom(
                     windowHeight + insets.top + insets.bottom - pageY + styles.scroll__story.paddingTop,
                 );
@@ -226,7 +224,6 @@ const StoryScreen: React.FC<
                             <Pressable
                                 onPress={() => {
                                     props.navigation.navigate(Stacks.PROFILE, { screen: Screens.Profile.PROFILE });
-                                    console.log(123);
                                 }}
                             >
                                 <Image
@@ -377,6 +374,18 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '45%',
     },
+    coverContent__boxes: {
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: '100%',
+        width: '50%',
+    },
+    cover__genres: {
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+    },
     genres__genreWrapper: {
         marginTop: sizes.PADDING_SMALL,
         backgroundColor: colors.GREY_BOX,
@@ -391,17 +400,15 @@ const styles = StyleSheet.create({
         fontFamily: 'RFDewiExtended_Semibold',
         color: colors.LIGHT_GREY,
     },
-    coverContent__boxes: {
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '100%',
-        width: '50%',
+    cover__textName: {
+        marginTop: 20,
+        fontSize: sizes.TEXT_BIG,
+        fontFamily: 'RFDewiExpanded_Bold',
     },
-    cover__genres: {
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
+    cover__textAuthor: {
+        marginTop: 20,
+        fontSize: sizes.TEXT_VERY_LITTLE,
+        fontFamily: 'RFDewiExtended_Regular',
     },
     cover__shortStory: {
         marginTop: 10,
@@ -429,16 +436,6 @@ const styles = StyleSheet.create({
         fontFamily: 'RFDewiExtended_Regular',
         lineHeight: 23,
         width: '100%',
-    },
-    cover__textName: {
-        marginTop: 20,
-        fontSize: sizes.TEXT_BIG,
-        fontFamily: 'RFDewiExpanded_Bold',
-    },
-    cover__textAuthor: {
-        marginTop: 20,
-        fontSize: sizes.TEXT_VERY_LITTLE,
-        fontFamily: 'RFDewiExtended_Regular',
     },
 });
 

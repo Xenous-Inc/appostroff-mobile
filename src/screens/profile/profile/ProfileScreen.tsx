@@ -1,8 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CompositeScreenProps } from '@react-navigation/native';
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { AppStackParams } from '@navigation/AppNavigator';
-import { StyleSheet, Text, View, Image, Dimensions, Pressable, ScrollViewProps } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, Pressable } from 'react-native';
 import { Screens } from '@navigation/constants';
 import { ProfileStackParams } from '@navigation/stacks/ProfileStack';
 import sizes from '@styles/sizes';
@@ -11,16 +11,8 @@ import constants from '@utils/constants';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stacks } from '@navigation/constants';
 import ProfileBox from '@components/molecules/ProfileBox';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import Quote from '@components/molecules/Quote';
-import Animated, {
-    Extrapolation,
-    interpolate,
-    useAnimatedProps,
-    useAnimatedScrollHandler,
-    useAnimatedStyle,
-    useSharedValue,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 
 const ProfileScreen: React.FC<
     CompositeScreenProps<
@@ -31,21 +23,9 @@ const ProfileScreen: React.FC<
     const insets = useSafeAreaInsets();
 
     const windowHeight = useMemo(() => Dimensions.get('screen').height - insets.top - insets.bottom, [insets]);
-    const windowWidth = useMemo(() => Dimensions.get('screen').width - insets.left - insets.right, [insets]);
-
-    const scrollViewRef = useRef<Animated.ScrollView>(null);
 
     // defines progress of collapsing: from 0 to 1
     const collapseProgress = useSharedValue(0);
-    // defines progress of scrolling: from 0 to 1
-    const scrollProgress = useSharedValue(0);
-
-    const scrollViewAnimatedProps = useAnimatedProps<ScrollViewProps>(
-        () => ({
-            pagingEnabled: collapseProgress.value <= 0.98,
-        }),
-        [],
-    );
 
     const handleScrollAnimated = useAnimatedScrollHandler(
         event => {
@@ -135,83 +115,36 @@ const ProfileScreen: React.FC<
 };
 
 const styles = StyleSheet.create({
-    scroll: {
-        backgroundColor: colors.WHITE,
-    },
-    wrapper: {
-        backgroundColor: colors.WHITE,
-    },
-    content__icons: {
-        width: 24,
-        height: 24,
-    },
-    content__profilepic: {
-        width: 120,
-        height: 120,
-        borderRadius: 24,
+    wrapper__content: {
+        width: '100%',
+        paddingHorizontal: 24,
     },
     content__iconsWrapper: {
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    content__boxPic: {
-        alignItems: 'flex-start',
+    content__icons: {
         width: 24,
         height: 24,
-    },
-    content__name: {
-        fontSize: sizes.TEXT_MEDIUM_BIG,
-        fontFamily: 'RFDewiExtended_Bold',
-        marginBottom: sizes.PADDING_LITTLE,
-    },
-    wrapper__name: {
-        alignItems: 'center',
-        paddingTop: sizes.PADDING_MEDIUM,
     },
     wrapper__profilePic: {
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: sizes.PADDING_LITTLE,
     },
-    wrapper__quotes: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    content__profilepic: {
+        width: 120,
+        height: 120,
+        borderRadius: 24,
+    },
+    wrapper__name: {
         alignItems: 'center',
-        marginTop: 44,
-        marginBottom: sizes.PADDING_BIG,
+        paddingTop: sizes.PADDING_MEDIUM,
     },
-    content__quotesHeader: {
-        fontSize: sizes.TEXT_MEDIUM,
-        fontFamily: 'RFDewiExtended_Bold',
-        color: colors.BLACK,
-    },
-    content__aaa: {
-        fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewi_Semibold',
-        color: colors.BLACK,
-    },
-    content__boxInfo: {
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-    },
-    content__textTag: {
+    content__name: {
         fontSize: sizes.TEXT_MEDIUM_BIG,
-        fontFamily: 'RFDewiExpanded_Semibold',
-        color: colors.BLACK,
-    },
-    content__textInfo: {
-        fontSize: sizes.TEXT_VERY_LITTLE,
-        fontFamily: 'RFDewiExtended_Semibold',
-        color: colors.GREY_INFO,
-    },
-    content__separator: {
-        height: 21,
-        width: 1,
-        backgroundColor: colors.GREY_SEPARATOR,
-    },
-    wrapper__content: {
-        width: '100%',
-        paddingHorizontal: 24,
+        fontFamily: 'RFDewiExtended_Bold',
+        marginBottom: sizes.PADDING_LITTLE,
     },
     wrapper__content_boxes: {
         flexDirection: 'row',
@@ -225,9 +158,39 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: sizes.PADDING_SMALL,
     },
+    content__textInfo: {
+        fontSize: sizes.TEXT_VERY_LITTLE,
+        fontFamily: 'RFDewiExtended_Semibold',
+        color: colors.GREY_INFO,
+    },
+    content__textTag: {
+        fontSize: sizes.TEXT_MEDIUM_BIG,
+        fontFamily: 'RFDewiExpanded_Semibold',
+        color: colors.BLACK,
+    },
+    content__separator: {
+        height: 21,
+        width: 1,
+        backgroundColor: colors.GREY_SEPARATOR,
+    },
+    wrapper__quotes: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 44,
+        marginBottom: sizes.PADDING_BIG,
+    },
+    content__quotesHeader: {
+        fontSize: sizes.TEXT_MEDIUM,
+        fontFamily: 'RFDewiExtended_Bold',
+        color: colors.BLACK,
+    },
     content__quotesAllText: {
         fontSize: sizes.TEXT_SMALL,
         fontFamily: 'RFDewiExtended_Semibold',
+    },
+    scroll: {
+        backgroundColor: colors.WHITE,
     },
 });
 

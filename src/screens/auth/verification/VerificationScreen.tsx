@@ -23,7 +23,7 @@ const VerificationScreen: React.FC<
 
     const renderItem = ({ index, symbol, isFocused }) => {
         return (
-            <Text key={index} style={[styles.content__render_item]} onLayout={getCellOnLayoutHandler(index)}>
+            <Text key={index} style={[styles.content__renderItem]} onLayout={getCellOnLayoutHandler(index)}>
                 {symbol || (isFocused ? <Cursor /> : null)}
             </Text>
         );
@@ -33,19 +33,19 @@ const VerificationScreen: React.FC<
         <View style={styles.wrapper}>
             <View style={styles.wrapper__content}>
                 <Text style={styles.content__header}>{constants.headerVerification}</Text>
-                <Text style={styles.content__text_instruction}>{constants.instructionVerification}</Text>
+                <Text style={styles.content__textInstruction}>{constants.instructionVerification}</Text>
                 <CodeField
                     {...prop}
                     value={value}
                     onChangeText={setValue}
                     cellCount={constants.cellCount}
-                    rootStyle={styles.content__code_field}
+                    rootStyle={styles.content__codeField}
                     keyboardType='number-pad'
                     textContentType='oneTimeCode'
                     renderCell={renderItem}
                 />
             </View>
-            <View style={styles.wrapper__buttons_container}>
+            <View style={styles.wrapper__buttonsContainer}>
                 <Button
                     title={constants.buttonTextContinue}
                     mode={Button.Mode.Contained}
@@ -58,7 +58,6 @@ const VerificationScreen: React.FC<
                     mode={Button.Mode.Blank}
                     onPress={() => {
                         props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
-                        console.log('123');
                     }}
                 />
             </View>
@@ -76,31 +75,31 @@ const styles = StyleSheet.create({
         paddingHorizontal: sizes.PADDING_BIG,
         backgroundColor: colors.WHITE,
     },
+    wrapper__content: {
+        width: '100%',
+    },
     content__header: {
         fontSize: sizes.TEXT_BIG,
         fontFamily: 'RFDewiExtended_Bold',
         marginBottom: sizes.PADDING_SMALL,
     },
-    content__text_instruction: {
+    content__textInstruction: {
         fontSize: sizes.TEXT_LITTLE,
         fontFamily: 'RFDewiExtended_Regular',
         color: colors.TEXT_INSTRUCTION,
         width: 280,
     },
-    wrapper__content: {
-        width: '100%',
-    },
-    wrapper__buttons_container: {
-        width: '100%',
-        marginBottom: sizes.PADDING_BIG,
-    },
-    content__code_field: {
+    content__codeField: {
         height: 55.8,
         marginTop: 31,
         paddingHorizontal: 20,
         justifyContent: 'space-around',
     },
-    content__render_item: {
+    wrapper__buttonsContainer: {
+        width: '100%',
+        marginBottom: sizes.PADDING_BIG,
+    },
+    content__renderItem: {
         height: 55.8,
         width: 55.8,
         fontSize: 24,

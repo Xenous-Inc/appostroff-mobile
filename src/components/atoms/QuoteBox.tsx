@@ -1,19 +1,5 @@
-import React, { useMemo } from 'react';
-import {
-    ColorValue,
-    GestureResponderEvent,
-    Pressable,
-    StyleProp,
-    StyleSheet,
-    Text,
-    TextStyle,
-    TouchableOpacity,
-    View,
-    ViewStyle,
-} from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import sizes from '@styles/sizes';
-import { darkenColor, setAlpha } from '@utils/colors';
+import React from 'react';
+import { ColorValue, StyleSheet, TouchableOpacity, View } from 'react-native';
 import colors from '@styles/colors';
 
 export interface IQuoteBox {

@@ -13,12 +13,12 @@ const Box: React.FC<IBox> = props => {
 
     return (
         <View style={styles.content}>
-            <View style={styles.content__white_box}>
-                <Image source={imageSource} style={styles.white_box__image} />
+            <View style={styles.content__whiteBox}>
+                <Image source={imageSource} style={styles.whiteBox__image} />
             </View>
             <View>
-                <Text style={styles.content__text_header}>{textHeader}</Text>
-                <Text style={styles.content__text_info}>{textInfo}</Text>
+                <Text style={styles.content__textHeader}>{textHeader}</Text>
+                <Text style={styles.content__textInfo}>{textInfo}</Text>
             </View>
         </View>
     );
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
     },
-    content__white_box: {
+    content__whiteBox: {
         width: 38,
         height: 38,
         backgroundColor: colors.WHITE,
@@ -43,20 +43,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    content__text_header: {
+    whiteBox__image: {
+        alignItems: 'flex-start',
+        width: 24,
+        height: 24,
+    },
+    content__textHeader: {
         fontSize: sizes.TEXT_VERY_LITTLE,
         fontFamily: 'RFDewiExtended_Semibold',
         color: colors.LIGHT_GREY,
     },
-    content__text_info: {
+    content__textInfo: {
         fontSize: sizes.TEXT_SMALL,
         fontFamily: 'RFDewiExtended_Semibold',
         color: colors.BLACK,
-    },
-    white_box__image: {
-        alignItems: 'flex-start',
-        width: 24,
-        height: 24,
     },
 });
 

@@ -29,14 +29,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         paddingLeft: 16,
     },
+    box__image: {
+        width: 24,
+        height: 24,
+    },
     content__text: {
         fontSize: sizes.TEXT_SMALL,
         fontFamily: 'RFDewiExpanded_Bold',
         color: colors.BLACK,
-    },
-    box__image: {
-        width: 24,
-        height: 24,
     },
 });
 

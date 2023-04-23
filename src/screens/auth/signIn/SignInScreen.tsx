@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BackHandler, Keyboard, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Screens } from '@navigation/constants';
 import { AuthStackParams } from '@navigation/stacks/AuthStack';
@@ -44,15 +44,15 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
     return (
         <>
             <View style={[styles.wrapper, { paddingTop: insets.top * 2 }]}>
-                <View style={[styles.wrapper__pooling_container]}>
+                <View style={[styles.wrapper__poolingContainer]}>
                     <Text style={styles.wrapper__header}>{constants.header}</Text>
-                    <Text style={styles.wrapper__text_instruction}>{constants.instruction}</Text>
+                    <Text style={styles.wrapper__textInstruction}>{constants.instruction}</Text>
                     <Dropdown isTexting={isTexting} />
-                    <View style={styles.wrapper__phone_input}>
-                        <Text style={styles.phone_input__text}>{constants.phoneIndex}</Text>
-                        <View style={styles.phone_input__separator} />
+                    <View style={styles.wrapper__phoneInput}>
+                        <Text style={styles.phoneInput__text}>{constants.phoneIndex}</Text>
+                        <View style={styles.phoneInput__separator} />
                         <TextInput
-                            style={styles.phone_input__input}
+                            style={styles.phoneInput__input}
                             placeholder={constants.placeHolder}
                             maxLength={10}
                             keyboardType='numeric'
@@ -70,7 +70,7 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
                         />
                     </View>
                 </View>
-                <View style={styles.wrapper__button_container}>
+                <View style={styles.wrapper__buttonContainer}>
                     <Button
                         title={constants.buttonTextNext}
                         mode={Button.Mode.Contained}
@@ -105,16 +105,16 @@ const styles = StyleSheet.create({
         fontFamily: 'RFDewiExtended_Bold',
         marginBottom: sizes.PADDING_SMALL,
     },
-    wrapper__pooling_container: {
+    wrapper__poolingContainer: {
         width: '100%',
     },
-    wrapper__text_instruction: {
+    wrapper__textInstruction: {
         fontSize: sizes.TEXT_LITTLE,
         fontFamily: 'RFDewiExtended_Regular',
         color: colors.TEXT_INSTRUCTION,
         width: 280,
     },
-    wrapper__phone_input: {
+    wrapper__phoneInput: {
         height: 48,
         width: '100%',
         alignItems: 'center',
@@ -123,25 +123,25 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 12,
         borderBottomRightRadius: 12,
     },
-    phone_input__text: {
+    phoneInput__text: {
         marginLeft: 20,
         fontFamily: 'RFDewiExtended_Semibold',
         fontSize: 16,
     },
-    phone_input__separator: {
+    phoneInput__separator: {
         width: 2,
         height: 48,
         backgroundColor: colors.SEPARATOR,
         marginLeft: 15,
     },
-    phone_input__input: {
+    phoneInput__input: {
         marginLeft: 10,
         width: '100%',
         height: 48,
         fontSize: sizes.TEXT_SMALL,
         fontFamily: 'RFDewiExtended_Semibold',
     },
-    wrapper__button_container: {
+    wrapper__buttonContainer: {
         width: '100%',
         marginBottom: sizes.PADDING_BIG,
     },

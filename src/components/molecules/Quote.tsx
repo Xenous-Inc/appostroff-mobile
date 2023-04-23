@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, ImageSourcePropType, Dimensions, LayoutChangeEvent } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { StyleSheet, Text, View, LayoutChangeEvent } from 'react-native';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import Animated, {
@@ -101,7 +101,7 @@ const Quote: React.FC<IQuote> & { QuoteType: typeof QuoteType } = props => {
                     borderWidth: type === QuoteType.QuoteType ? null : 1,
                     borderRadius: type === QuoteType.QuoteType ? 16 : 24,
                     backgroundColor: type === QuoteType.QuoteType ? colors.SOFT_GREY : null,
-                    marginTop: id === 0 ? staticContentHeight - insets.top : null,
+                    marginTop: id === 0 ? staticContentHeight - insets.top * 3 : null,
                 },
             ]}
         >
@@ -161,10 +161,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '90%',
     },
-    wrapper__quote: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+    content__circle: {
+        alignItems: 'flex-start',
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        marginRight: sizes.PADDING_LITTLE,
     },
     content__name: {
         fontFamily: 'RFDewiExpanded_Bold',
@@ -175,12 +177,10 @@ const styles = StyleSheet.create({
         fontFamily: 'RFDewiExtended_Regular',
         color: colors.LIGHT_GREY,
     },
-    content__circle: {
-        alignItems: 'flex-start',
-        width: 24,
-        height: 24,
-        borderRadius: 12,
-        marginRight: sizes.PADDING_LITTLE,
+    wrapper__quote: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     content__separator: {
         height: '100%',

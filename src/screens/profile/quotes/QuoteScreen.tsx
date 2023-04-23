@@ -1,14 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
     StyleSheet,
     Text,
     View,
     Image,
     Pressable,
-    TouchableOpacity,
-    Dimensions,
-    ScrollViewProps,
     LayoutChangeEvent,
     NativeScrollEvent,
     NativeSyntheticEvent,
@@ -22,19 +19,10 @@ import colors from '@styles/colors';
 import constants from '@utils/constants';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stacks } from '@navigation/constants';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { TextInput } from 'react-native-gesture-handler';
 import Quote from '@components/molecules/Quote';
 import QuoteBox from '@components/atoms/QuoteBox';
-import Animated, {
-    useSharedValue,
-    useAnimatedProps,
-    useAnimatedScrollHandler,
-    withTiming,
-    useAnimatedStyle,
-    interpolate,
-    Extrapolation,
-} from 'react-native-reanimated';
-import durations from '@styles/durations';
+import Animated, { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
 
 const QuotesScreen: React.FC<
     CompositeScreenProps<
@@ -42,8 +30,6 @@ const QuotesScreen: React.FC<
         NativeStackScreenProps<AppStackParams>
     >
 > = props => {
-    const { navigation } = props;
-
     const [activeQuotes, setActiveQuotes] = useState([true, false, false, false]);
     const [staticContent, setStaticContentHeight] = useState(0);
 
@@ -63,12 +49,11 @@ const QuotesScreen: React.FC<
             //down
             direction.value = false;
         }
-        console.log(scrollProgress.value);
     };
 
     const handleStaticContentLayout = useCallback(
         (event: LayoutChangeEvent) =>
-            event.target.measure((_x, _y, width, height, _pageX, pageY) => {
+            event.target.measure((_x, _y, height, _pageX) => {
                 setStaticContentHeight(height);
             }),
 
@@ -80,7 +65,6 @@ const QuotesScreen: React.FC<
             direction.value && scrollProgress.value > 240
                 ? withTiming(-280, { duration: 400 })
                 : withTiming(0, { duration: 400 });
-        //console.log('animation');
         return { transform: [{ translateY }] };
     }, [direction]);
 
@@ -126,7 +110,7 @@ const QuotesScreen: React.FC<
                         <TextInput placeholder={constants.quotesSearch} style={styles.search__textInput} />
                     </View>
                 </View>
-                <View style={styles.wrapper__quote_boxes}>
+                <View style={styles.wrapper__quoteBoxes}>
                     <QuoteBox
                         active={activeQuotes[0]}
                         activeColor={colors.YELLOW_QUOTE}
@@ -163,17 +147,17 @@ const QuotesScreen: React.FC<
 };
 
 const styles = StyleSheet.create({
-    wrapper: {
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        backgroundColor: colors.WHITE,
+    scroll: {
         paddingHorizontal: 24,
+        backgroundColor: colors.WHITE,
     },
-    content__searchIcon: {
-        width: 24,
-        height: 24,
-        marginHorizontal: sizes.PADDING_LITTLE,
+    wrapper__content: {
+        position: 'absolute',
+        width: '100%',
+        overflow: 'hidden',
+        paddingHorizontal: sizes.PADDING_BIG,
+        marginBottom: 24,
+        backgroundColor: colors.WHITE,
     },
     content__backIcon: {
         width: 24,
@@ -185,6 +169,11 @@ const styles = StyleSheet.create({
         marginBottom: sizes.PADDING_LITTLE,
         marginTop: sizes.PADDING_MEDIUM,
     },
+    wrapper__search: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center',
+    },
     content__searchBox: {
         width: '100%',
         height: 40,
@@ -194,37 +183,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
     },
-    wrapper__search: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignContent: 'center',
-    },
-    content__searchText: {
-        fontSize: sizes.TEXT_SMALL,
-        fontFamily: 'RFDewiExtended_Semibold',
-        color: colors.GREY_SEARCH,
-    },
-    wrapper__content: {
-        position: 'absolute',
-        width: '100%',
-        overflow: 'hidden',
-        paddingHorizontal: sizes.PADDING_BIG,
-        marginBottom: 24,
-        backgroundColor: colors.WHITE,
-    },
-    wrapper__quote_boxes: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingTop: sizes.PADDING_SMALL,
-    },
-    scroll: {
-        paddingHorizontal: 24,
-        backgroundColor: colors.WHITE,
+    content__searchIcon: {
+        width: 24,
+        height: 24,
+        marginHorizontal: sizes.PADDING_LITTLE,
     },
     search__textInput: {
         fontSize: sizes.TEXT_SMALL,
         fontFamily: 'RFDewiExtended_Semibold',
         width: '80%',
+    },
+    wrapper__quoteBoxes: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingTop: sizes.PADDING_SMALL,
     },
 });
 

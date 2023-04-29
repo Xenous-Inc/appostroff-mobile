@@ -10,13 +10,20 @@ import Dropdown from '@components/molecules/Dropdown';
 import Button from '@components/atoms/Button';
 import constants from '@utils/constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { createSavePhoneAction } from '@store/reducers/phone';
 
 const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = props => {
     const [number, onChangeNumber] = React.useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [isTexting, setIsTexting] = useState(false);
 
+    const phoneIndex = useAppSelector(state => state.phone.phonePrefix);
+    const { data, isLoading, error } = useAppSelector(state => state.auth);
+
     const insets = useSafeAreaInsets();
+
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         const unsubscribeFocus = props.navigation.addListener('focus', () => {
@@ -49,7 +56,7 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
                     <Text style={styles.wrapper__textInstruction}>{constants.instruction}</Text>
                     <Dropdown isTexting={isTexting} />
                     <View style={styles.wrapper__phoneInput}>
-                        <Text style={styles.phoneInput__text}>{constants.phoneIndex}</Text>
+                        <Text style={styles.phoneInput__text}>{phoneIndex}</Text>
                         <View style={styles.phoneInput__separator} />
                         <TextInput
                             style={styles.phoneInput__input}
@@ -75,6 +82,7 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
                         title={constants.buttonTextNext}
                         mode={Button.Mode.Contained}
                         onPress={() => {
+                            dispatch(createSavePhoneAction(phoneIndex + number));
                             props.navigation.navigate(Screens.Auth.VERIFICATION);
                         }}
                     />

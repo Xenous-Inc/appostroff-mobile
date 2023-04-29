@@ -11,6 +11,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import constants from '@utils/constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAppDispatch } from '@store/hooks';
+import { savePrefix } from '@store/reducers/reducerPhone';
+import { isElementAccessChain } from 'typescript';
 
 export interface IDropdown {
     isTexting: boolean;
@@ -23,6 +26,8 @@ const Dropdown: React.FC<IDropdown> = props => {
     }, [isTexting]);
 
     const insets = useSafeAreaInsets();
+
+    const dispatch = useAppDispatch();
 
     const windowHeight = useMemo(() => Dimensions.get('window').height - insets.top - insets.bottom, [insets]);
 
@@ -76,6 +81,8 @@ const Dropdown: React.FC<IDropdown> = props => {
                             title={item.title}
                             onPress={() => {
                                 setChosen(index);
+                                dispatch(savePrefix(item.phonePrefix));
+                                console.log(item.phonePrefix);
                                 changeHeight();
                             }}
                         />

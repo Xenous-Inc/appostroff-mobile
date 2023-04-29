@@ -3,38 +3,47 @@ export default {
         {
             id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
             title: 'Российская Федерация',
+            phonePrefix: '+7',
         },
         {
             id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
             title: 'США',
+            phonePrefix: '+1',
         },
         {
             id: '58694a0f-3da1-471f-bd96-145571eыв29d72',
             title: 'Бразилия',
+            phonePrefix: '+55',
         },
         {
             id: '58694a0f-3da1-471f-bd96-14557пыай1e29d72',
             title: 'ыаыв',
+            phonePrefix: '+1',
         },
         {
             id: '58694a0f-3da1-471f-bd96-ывпы145571e29d72',
             title: 'ыВП',
+            phonePrefix: '+1',
         },
         {
             id: '58694a0f-3da1-471f-bпывпd96-145571e29d72',
             title: 'ПЫВ',
+            phonePrefix: '+1',
         },
         {
             id: '58694a0f-3da1-471fпыв-bd96-145571e29d72',
             title: 'hdfh',
+            phonePrefix: '+1',
         },
         {
             id: '58694a0f-3da1-471f-bфкd96-145571e29d72',
             title: 'SD',
+            phonePrefix: '+1',
         },
         {
             id: '58694a0f-3da1-кйцк471f-bd96-145571e29d72',
             title: 'БразилиGSDGя',
+            phonePrefix: '+1',
         },
     ],
     QUOTES_DATA: [

@@ -11,7 +11,8 @@ import Button from '@components/atoms/Button';
 import constants from '@utils/constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { createSavePhoneAction } from '@store/reducers/phone';
+import phone, { createSavePhoneAction } from '@store/reducers/phone';
+import { createSignUpAction } from '@store/reducers/auth';
 
 const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = props => {
     const [number, onChangeNumber] = React.useState('');
@@ -19,7 +20,6 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
     const [isTexting, setIsTexting] = useState(false);
 
     const phoneIndex = useAppSelector(state => state.phone.phonePrefix);
-    const { data, isLoading, error } = useAppSelector(state => state.auth);
 
     const insets = useSafeAreaInsets();
 
@@ -54,6 +54,7 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
                 <View style={[styles.wrapper__poolingContainer]}>
                     <Text style={styles.wrapper__header}>{constants.header}</Text>
                     <Text style={styles.wrapper__textInstruction}>{constants.instruction}</Text>
+                    <Text style={{ color: colors.BLACK, fontSize: 20 }}>{isLoading}</Text>
                     <Dropdown isTexting={isTexting} />
                     <View style={styles.wrapper__phoneInput}>
                         <Text style={styles.phoneInput__text}>{phoneIndex}</Text>
@@ -82,8 +83,15 @@ const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Scre
                         title={constants.buttonTextNext}
                         mode={Button.Mode.Contained}
                         onPress={() => {
-                            dispatch(createSavePhoneAction(phoneIndex + number));
-                            props.navigation.navigate(Screens.Auth.VERIFICATION);
+                            //dispatch(createSavePhoneAction(phoneIndex + number));
+                            dispatch(createSignUpAction({ phone: phoneIndex + number })).then(e => {
+                                console.log(e == null);
+                                console.log(e == undefined);
+                                console.log(e);
+                                if (e.meta.requestStatus != 'rejected') {
+                                    props.navigation.navigate(Screens.Auth.VERIFICATION);
+                                }
+                            });
                         }}
                     />
                     <Button

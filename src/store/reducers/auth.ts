@@ -1,8 +1,8 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import client from 'src/api/client';
-import { AuthRests } from 'src/api/rests/auth.rest';
-import { IApiState } from 'src/api/types';
-import { ISignUpRequestPayload, ISignUpResponsePayload } from 'src/api/types/auth.types';
+import client from '@api/client';
+import { AuthRests } from '@api/rests/auth.rest';
+import { IApiState } from '@api/types';
+import { ISignUpResponsePayload, ISignUpRequestPayload } from '@api/types/auth.types';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -14,10 +14,12 @@ export const authSlice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder.addCase(createSignUpAction.pending, state => {
+            console.log('request sended');
             state.isLoading = true;
             state.error = undefined;
         });
         builder.addCase(createSignUpAction.fulfilled, (state, action) => {
+            console.log('request ended');
             state.isLoading = false;
             state.data = action.payload;
             state.error = undefined;
@@ -32,7 +34,7 @@ export const authSlice = createSlice({
 export const createSignUpAction = createAsyncThunk(
     `${authSlice.name}/createSignUpAction`,
     async (payload: ISignUpRequestPayload) => {
-        const { data } = await client(AuthRests.SIGN_UP(payload));
+        const { data } = await client(AuthRests.REQUEST_PHONE(payload));
         return data as ISignUpResponsePayload;
     },
 );

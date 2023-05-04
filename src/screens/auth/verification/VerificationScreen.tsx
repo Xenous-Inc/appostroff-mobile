@@ -10,6 +10,7 @@ import { Screens, Stacks } from '@navigation/constants';
 import { AuthStackParams } from '@navigation/stacks/AuthStack';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParams } from '@navigation/AppNavigator';
+import { useAppSelector } from '@store/hooks';
 
 const VerificationScreen: React.FC<
     CompositeScreenProps<
@@ -20,6 +21,8 @@ const VerificationScreen: React.FC<
     const [value, setValue] = useState('');
 
     const [prop, getCellOnLayoutHandler] = useClearByFocusCell({ value, setValue });
+
+    const { data, isLoading, error } = useAppSelector(state => state.auth);
 
     const renderItem = ({ index, symbol, isFocused }) => {
         return (

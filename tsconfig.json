@@ -9,6 +9,7 @@
         "@styles/*": ["src/styles/*"],
         "@utils/*": ["src/utils/*"],
         "@store/*": ["src/store/*"],
+        "@api/*": ["src/api/*"],
       }
   },
   "extends": "expo/tsconfig.base"

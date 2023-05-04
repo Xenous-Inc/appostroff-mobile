@@ -1,5 +1,5 @@
 export interface ISignUpRequestPayload {
-    phoneNumber: string;
+    phone: string;
 }
 
 export interface ISignUpResponsePayload {

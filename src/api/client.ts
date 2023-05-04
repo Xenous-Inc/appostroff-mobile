@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const client = axios.create({
-    baseURL: 'https://some-domain.com/api/',
+    baseURL: 'http://45.15.159.97:3001',
 });
 
 export default client;

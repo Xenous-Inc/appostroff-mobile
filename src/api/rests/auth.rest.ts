@@ -1,9 +1,9 @@
 import { ISignUpRequestPayload } from 'src/api/types/auth.types';
 
 export const AuthRests = {
-    SIGN_UP: (payload: ISignUpRequestPayload) => ({
+    REQUEST_PHONE: (payload: ISignUpRequestPayload) => ({
         method: 'post',
-        url: '/auth/signUp',
+        url: '/auth/requestCode',
         data: payload,
     }),
 };

@@ -12,8 +12,7 @@ import Animated, {
 import constants from '@utils/constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch } from '@store/hooks';
-import { savePrefix } from '@store/reducers/reducerPhone';
-import { isElementAccessChain } from 'typescript';
+import { createSavePrefixAction } from '@store/reducers/phone';
 
 export interface IDropdown {
     isTexting: boolean;
@@ -81,7 +80,7 @@ const Dropdown: React.FC<IDropdown> = props => {
                             title={item.title}
                             onPress={() => {
                                 setChosen(index);
-                                dispatch(savePrefix(item.phonePrefix));
+                                dispatch(createSavePrefixAction(item.phonePrefix));
                                 console.log(item.phonePrefix);
                                 changeHeight();
                             }}

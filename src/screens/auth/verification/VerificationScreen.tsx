@@ -10,7 +10,8 @@ import { Screens, Stacks } from '@navigation/constants';
 import { AuthStackParams } from '@navigation/stacks/AuthStack';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParams } from '@navigation/AppNavigator';
-import { useAppSelector } from '@store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { createSignUpAction, createVerificationAction } from '@store/reducers/auth';
 
 const VerificationScreen: React.FC<
     CompositeScreenProps<
@@ -18,15 +19,16 @@ const VerificationScreen: React.FC<
         NativeStackScreenProps<AppStackParams>
     >
 > = props => {
-    const [value, setValue] = useState('');
+    const [code, setCode] = useState('');
 
-    const [prop, getCellOnLayoutHandler] = useClearByFocusCell({ value, setValue });
+    const { data } = useAppSelector(state => state.auth.signUp);
+    const phoneNumber = useAppSelector(state => state.phone.phoneNumber);
 
-    const { data, isLoading, error } = useAppSelector(state => state.auth);
+    const dispatch = useAppDispatch();
 
     const renderItem = ({ index, symbol, isFocused }) => {
         return (
-            <Text key={index} style={[styles.content__renderItem]} onLayout={getCellOnLayoutHandler(index)}>
+            <Text key={index} style={[styles.content__renderItem]}>
                 {symbol || (isFocused ? <Cursor /> : null)}
             </Text>
         );
@@ -38,9 +40,8 @@ const VerificationScreen: React.FC<
                 <Text style={styles.content__header}>{constants.headerVerification}</Text>
                 <Text style={styles.content__textInstruction}>{constants.instructionVerification}</Text>
                 <CodeField
-                    {...prop}
-                    value={value}
-                    onChangeText={setValue}
+                    value={code}
+                    onChangeText={setCode}
                     cellCount={constants.cellCount}
                     rootStyle={styles.content__codeField}
                     keyboardType='number-pad'
@@ -53,14 +54,18 @@ const VerificationScreen: React.FC<
                     title={constants.buttonTextContinue}
                     mode={Button.Mode.Contained}
                     onPress={() => {
-                        props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
+                        dispatch(createVerificationAction({ code: parseInt(code), callId: data.callId })).then(e => {
+                            if (e.meta.requestStatus != 'rejected') {
+                                props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
+                            }
+                        });
                     }}
                 />
                 <Button
                     title={constants.buttonTextRetry}
                     mode={Button.Mode.Blank}
                     onPress={() => {
-                        props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
+                        dispatch(createSignUpAction({ phone: phoneNumber }));
                     }}
                 />
             </View>

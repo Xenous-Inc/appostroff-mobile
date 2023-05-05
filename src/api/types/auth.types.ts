@@ -2,7 +2,12 @@ export interface ISignUpRequestPayload {
     phone: string;
 }
 
-export interface ISignUpResponsePayload {
+export interface IVerificationRequestPayload {
+    code: number;
+    callId: string;
+}
+
+export interface IVerificationResponsePayload {
     accessToken: string;
     refreshToken: string;
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     Dimensions,
     Image,
@@ -32,6 +32,9 @@ import constants from '@utils/constants';
 import Box from '@components/molecules/Box';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { AppStackParams } from '@navigation/AppNavigator';
+import { Buffer } from 'buffer';
+import { useAppSelector } from '@store/hooks';
+import { decode } from '@api/decode';
 
 const StoryScreen: React.FC<
     CompositeScreenProps<
@@ -65,6 +68,9 @@ const StoryScreen: React.FC<
     const scrollProgress = useSharedValue(0);
     // defines progress of measuring short story layout: 0 or 1
     const isShortStoryMeasured = useSharedValue(false);
+
+    // get tokens from redux
+    const userInfo = useAppSelector(state => state.user_info);
 
     const barAnimatedStyle = useAnimatedStyle(() => {
         const opacity = interpolate(collapseProgress.value, [0.8, 1], [0, 1], Extrapolation.CLAMP);

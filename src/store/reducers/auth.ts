@@ -30,7 +30,7 @@ export const authSlice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder.addCase(createSignUpAction.pending, state => {
-            console.log('request sended');
+            console.log('request sent');
             state.signUp.isLoading = true;
             state.signUp.error = undefined;
         });
@@ -46,7 +46,7 @@ export const authSlice = createSlice({
             state.signUp.error = action.error;
         });
         builder.addCase(createVerificationAction.pending, state => {
-            console.log('request sended');
+            console.log('request sent');
             state.verification.isLoading = true;
             state.verification.error = undefined;
         });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
@@ -12,6 +12,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParams } from '@navigation/AppNavigator';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { createSignUpAction, createVerificationAction } from '@store/reducers/auth';
+import { createUserIdAction } from '@store/reducers/user_info';
+import { decode } from '@api/decode';
 
 const VerificationScreen: React.FC<
     CompositeScreenProps<
@@ -21,8 +23,8 @@ const VerificationScreen: React.FC<
 > = props => {
     const [code, setCode] = useState('');
 
-    const { data } = useAppSelector(state => state.auth.signUp);
-    const phoneNumber = useAppSelector(state => state.phone.phoneNumber);
+    const data = useAppSelector(state => state.auth);
+    const userInfo = useAppSelector(state => state.user_info);
 
     const dispatch = useAppDispatch();
 
@@ -33,6 +35,15 @@ const VerificationScreen: React.FC<
             </Text>
         );
     };
+
+    useEffect(() => {
+        if (data.verification.data != undefined) {
+            console.log(data.verification);
+            const decodeToken = decode(data.verification.data.access_token);
+            createUserIdAction(decodeToken.id);
+            props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
+        }
+    }, [data.verification.data]);
 
     return (
         <View style={styles.wrapper}>
@@ -54,18 +65,14 @@ const VerificationScreen: React.FC<
                     title={constants.buttonTextContinue}
                     mode={Button.Mode.Contained}
                     onPress={() => {
-                        dispatch(createVerificationAction({ code: parseInt(code), callId: data.callId })).then(e => {
-                            if (e.meta.requestStatus != 'rejected') {
-                                props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
-                            }
-                        });
+                        dispatch(createVerificationAction({ code: parseInt(code), callId: data.signUp.data.callId }));
                     }}
                 />
                 <Button
                     title={constants.buttonTextRetry}
                     mode={Button.Mode.Blank}
                     onPress={() => {
-                        dispatch(createSignUpAction({ phone: phoneNumber }));
+                        dispatch(createSignUpAction({ phone: userInfo.phone.phoneNumber }));
                     }}
                 />
             </View>

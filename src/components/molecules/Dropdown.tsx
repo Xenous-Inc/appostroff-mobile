@@ -12,7 +12,7 @@ import Animated, {
 import constants from '@utils/constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch } from '@store/hooks';
-import { createSavePrefixAction } from '@store/reducers/phone';
+import { createSavePrefixAction } from '@store/reducers/user_info';
 
 export interface IDropdown {
     isTexting: boolean;

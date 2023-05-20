@@ -12,14 +12,14 @@ import constants from '@utils/constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { createSignUpAction } from '@store/reducers/auth';
-import { createSavePhoneAction } from '@store/reducers/phone';
+import { createSavePhoneAction } from '@store/reducers/user_info';
 
 const SignInScreen: React.FC<NativeStackScreenProps<AuthStackParams, typeof Screens.Auth.SIGN_IN>> = props => {
     const [number, onChangeNumber] = React.useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [isTexting, setIsTexting] = useState(false);
 
-    const phoneIndex = useAppSelector(state => state.phone.phonePrefix);
+    const phoneIndex = useAppSelector(state => state.user_info.phone.phonePrefix);
 
     const insets = useSafeAreaInsets();
 

@@ -11,3 +11,8 @@ export interface IVerificationResponsePayload {
     accessToken: string;
     refreshToken: string;
 }
+
+export interface IRefreshResponsePayload {
+    accessToken: string;
+    refreshToken: string;
+}

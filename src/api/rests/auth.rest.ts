@@ -11,4 +11,12 @@ export const AuthRests = {
         url: '/auth/confirmationCode',
         data: payload,
     }),
+    REFRESH: () => ({
+        method: 'post',
+        url: '/auth/refresh',
+    }),
+    LOGOUT: () => ({
+        method: 'post',
+        url: '/auth/logout',
+    }),
 };

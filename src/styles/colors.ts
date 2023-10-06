@@ -18,6 +18,7 @@ const colors = {
     GREY_SEARCH: '#C8C8C8',
     TEXT_PRIMARY: '#989898',
     TEXT_INSTRUCTION: '#4C4C4C',
+    TEXT_BOTTOMSHEET: '#999999',
     SEPARATOR: '#EFEFEF',
 };
 

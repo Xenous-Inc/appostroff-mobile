@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, ImageSourcePropType } from 'react-native';
+import { StyleSheet, Text, View, Image, ImageSourcePropType, Pressable } from 'react-native';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 
@@ -7,12 +7,13 @@ export interface IBox {
     textHeader: string;
     textInfo: string;
     imageSource: ImageSourcePropType;
+    onPress?(): void;
 }
 const Box: React.FC<IBox> = props => {
-    const { textHeader, textInfo, imageSource } = props;
+    const { textHeader, textInfo, imageSource, onPress } = props;
 
     return (
-        <View style={styles.content}>
+        <Pressable style={styles.content} onPress={onPress}>
             <View style={styles.content__whiteBox}>
                 <Image source={imageSource} style={styles.whiteBox__image} />
             </View>
@@ -20,7 +21,7 @@ const Box: React.FC<IBox> = props => {
                 <Text style={styles.content__textHeader}>{textHeader}</Text>
                 <Text style={styles.content__textInfo}>{textInfo}</Text>
             </View>
-        </View>
+        </Pressable>
     );
 };
 

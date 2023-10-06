@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import sizes from '@styles/sizes';
 import colors from '@styles/colors';
 import Button from '@components/atoms/Button';
-import { CodeField, Cursor, useClearByFocusCell } from 'react-native-confirmation-code-field';
+import { CodeField, Cursor } from 'react-native-confirmation-code-field';
 import constants from '@utils/constants';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { Screens, Stacks } from '@navigation/constants';
@@ -43,7 +43,7 @@ const VerificationScreen: React.FC<
             createUserIdAction(decodeToken.id);
             props.navigation.navigate(Stacks.MAIN, { screen: Screens.Main.STORY });
         }
-    }, [data.verification.data]);
+    }, [data.verification, data.verification.data, props.navigation]);
 
     return (
         <View style={styles.wrapper}>

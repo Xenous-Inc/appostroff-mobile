@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
     Dimensions,
     Image,
@@ -15,6 +15,7 @@ import { MainStackParams } from '@navigation/stacks/MainStack';
 import { Screens, Stacks } from '@navigation/constants';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, {
+    Easing,
     Extrapolation,
     interpolate,
     useAnimatedProps,
@@ -32,9 +33,15 @@ import constants from '@utils/constants';
 import Box from '@components/molecules/Box';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { AppStackParams } from '@navigation/AppNavigator';
-import { Buffer } from 'buffer';
-import { useAppSelector } from '@store/hooks';
-import { decode } from '@api/decode';
+import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheetContent from '@components/molecules/BottomSheetContent';
+
+const getDuration = (text: string) => {
+    if (text.length / 2000 > 60) {
+        return Math.round(text.length / 120000) + 'ч ' + Math.round((text.length % 120000) / 2000) + 'мин';
+    }
+    return Math.round(text.length / 2000) + 'мин';
+};
 
 const StoryScreen: React.FC<
     CompositeScreenProps<
@@ -57,10 +64,16 @@ const StoryScreen: React.FC<
     const [shortStoryTextShiftBottom, setShortStoryTextShiftBottom] = useState(0);
     // defines number of symbols from story showed in short story block
     const [shortStoryLength, setShortStoryLength] = useState(0);
-    // defines number of lines from story showed in short story block
-    const [shortStoryLines, setShortStoryLines] = useState(0);
+    // defines readingProgress: from 0 to 1
+    const [readingProgress, setReadingProgress] = useState(0);
+    // defines index point bottomSheet
+    const [index, setIndex] = useState(-1);
 
     const scrollViewRef = useRef<Animated.ScrollView>(null);
+
+    const bottomSheetRef = useRef<BottomSheet>(null);
+
+    const snapPoints = useMemo(() => [270], []);
 
     // defines progress of collapsing: from 0 to 1
     const collapseProgress = useSharedValue(0);
@@ -68,9 +81,8 @@ const StoryScreen: React.FC<
     const scrollProgress = useSharedValue(0);
     // defines progress of measuring short story layout: 0 or 1
     const isShortStoryMeasured = useSharedValue(false);
-
-    // get tokens from redux
-    const userInfo = useAppSelector(state => state.user_info);
+    // defines is opened bottomSheet
+    const isBottomSheetOpened = useSharedValue(false);
 
     const barAnimatedStyle = useAnimatedStyle(() => {
         const opacity = interpolate(collapseProgress.value, [0.8, 1], [0, 1], Extrapolation.CLAMP);
@@ -84,6 +96,17 @@ const StoryScreen: React.FC<
             marginTop: insets.top,
         };
     });
+
+    const blackoutBackGroundStyle = useAnimatedStyle(() => {
+        const opacity = withTiming(isBottomSheetOpened.value ? 0.4 : 0, {
+            duration: 1000,
+            easing: Easing.inOut(Easing.quad),
+        });
+
+        return {
+            opacity,
+        };
+    }, [isBottomSheetOpened]);
 
     const progressAnimatedStyle = useAnimatedStyle(() => {
         const width = interpolate(scrollProgress.value, [0, 1], [0, windowWidth / 1.6], Extrapolation.CLAMP);
@@ -119,23 +142,23 @@ const StoryScreen: React.FC<
         [windowHeight, storyTextHeight],
     );
 
+    const handleScrollAnimatedEnd = () => {
+        if (scrollProgress.value > readingProgress) {
+            //dispatch(createUserReadingProgressAction(scrollProgress.value));
+            setReadingProgress(scrollProgress.value);
+            if (scrollProgress.value === 1) {
+                isBottomSheetOpened.value = true;
+                setIndex(0);
+            }
+        }
+    };
+
     const handleStaticCoverContentLayout = useCallback(
         (event: LayoutChangeEvent) =>
-            event.target.measure((_x, _y, width, height, _pageX, pageY) => {
+            event.target.measure((_x, _y, width, height, _pageX) => {
                 setStaticContentHeight(height);
-                setShortStoryLines(
-                    Math.floor(
-                        (windowHeight -
-                            staticContentHeight -
-                            insets.top -
-                            insets.bottom -
-                            styles.scroll__cover.padding * 2) /
-                            (styles.shortStory__text.fontSize * 1.7),
-                    ),
-                );
             }),
-
-        [windowHeight, insets.top, insets.bottom],
+        [],
     );
 
     // handle layout update of short story view and update necessary values
@@ -202,7 +225,6 @@ const StoryScreen: React.FC<
             [0, windowHeight - staticContentHeight - insets.top - insets.bottom - styles.scroll__cover.padding * 2],
             Extrapolation.CLAMP,
         );
-
         return {
             transform: [{ translateY }],
         };
@@ -211,7 +233,12 @@ const StoryScreen: React.FC<
     return (
         <SafeAreaView style={styles.wrapper}>
             <Animated.View style={[styles.wrapper__header, barAnimatedStyle]}>
+                <Animated.View
+                    pointerEvents={index === 0 ? 'box-only' : 'none'}
+                    style={[styles.wrapper__blackoutBackGround, blackoutBackGroundStyle]}
+                />
                 <Image source={require('@assets/icons/cancel.png')} style={styles.header__imageExit} />
+
                 <View style={styles.header__progressBar}>
                     <Animated.View style={[styles.progressBar__progress, progressAnimatedStyle]} />
                 </View>
@@ -222,6 +249,7 @@ const StoryScreen: React.FC<
                 animatedProps={scrollViewAnimatedProps}
                 showsVerticalScrollIndicator={false}
                 onScroll={handleScrollAnimated}
+                onScrollEndDrag={handleScrollAnimatedEnd}
                 ref={scrollViewRef}
             >
                 <>
@@ -251,13 +279,23 @@ const StoryScreen: React.FC<
                                     />
                                     <Box
                                         textHeader={constants.textDuration}
-                                        textInfo={constants.duration}
+                                        textInfo={getDuration(constants.storyText)}
                                         imageSource={require('@assets/icons/clock.png')}
                                     />
                                     <Box
                                         textHeader={constants.textComplete}
-                                        textInfo={constants.completePercent}
+                                        textInfo={`${Math.round(readingProgress * 100)}%`}
                                         imageSource={require('@assets/icons/book.png')}
+                                        onPress={() => {
+                                            scrollViewRef.current.scrollTo({
+                                                x: 0,
+                                                y:
+                                                    Dimensions.get('window').height +
+                                                    (storyTextHeight - Dimensions.get('window').height) *
+                                                        readingProgress,
+                                                animated: true,
+                                            });
+                                        }}
                                     />
                                 </View>
                             </View>
@@ -317,6 +355,27 @@ const StoryScreen: React.FC<
                     </Animated.View>
                 </>
             </Animated.ScrollView>
+            <Animated.View
+                pointerEvents={index === 0 ? 'box-only' : 'none'}
+                style={[styles.wrapper__blackoutBackGround, blackoutBackGroundStyle]}
+            />
+            <BottomSheet
+                ref={bottomSheetRef}
+                index={index}
+                snapPoints={snapPoints}
+                enableHandlePanningGesture={false}
+                enablePanDownToClose
+                handleComponent={null}
+                backgroundStyle={styles.wrapper__bottomSheet}
+            >
+                <BottomSheetContent
+                    onPressCancel={() => {
+                        isBottomSheetOpened.value = false;
+                        bottomSheetRef.current.close();
+                        setIndex(-1);
+                    }}
+                />
+            </BottomSheet>
         </SafeAreaView>
     );
 };
@@ -324,6 +383,12 @@ const StoryScreen: React.FC<
 const styles = StyleSheet.create({
     wrapper: {
         backgroundColor: colors.SOFT_WHITE,
+    },
+    wrapper__blackoutBackGround: {
+        backgroundColor: colors.BLACK,
+        position: 'absolute',
+        height: Dimensions.get('screen').height,
+        width: Dimensions.get('screen').width,
     },
     wrapper__header: {
         position: 'absolute',
@@ -335,6 +400,11 @@ const styles = StyleSheet.create({
         marginHorizontal: 12,
         paddingHorizontal: 5,
         zIndex: 1000,
+    },
+    wrapper__bottomSheet: {
+        borderRadius: 24,
+        backgroundColor: colors.WHITE,
+        borderCurve: 'continuous',
     },
     header__imageExit: {
         height: 30,

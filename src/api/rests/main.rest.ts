@@ -1,9 +1,6 @@
-import { ISignUpRequestPayload, IVerificationRequestPayload } from 'src/api/types/auth.types';
-
 export const MainRests = {
-    REQUEST_RANDOM_STORY: (payload: ISignUpRequestPayload) => ({
+    REQUEST_RANDOM_STORY: () => ({
         method: 'get',
         url: '/stories',
-        data: payload,
     }),
 };

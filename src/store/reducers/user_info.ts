@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-export const phoneSlice = createSlice({
+export const userInfoSlice = createSlice({
     name: 'phoneNumber',
     initialState: {
         phone: {
@@ -9,6 +9,9 @@ export const phoneSlice = createSlice({
         },
         userId: {
             id: undefined,
+        },
+        readingParams: {
+            readingProgress: 0,
         },
     },
     reducers: {
@@ -21,9 +24,13 @@ export const phoneSlice = createSlice({
         createUserIdAction: (state, action: PayloadAction<string>) => {
             state.userId.id = action.payload;
         },
+        createUserReadingProgressAction: (state, action: PayloadAction<number>) => {
+            state.readingParams.readingProgress = action.payload;
+        },
     },
 });
 
-export const { createSavePhoneAction, createSavePrefixAction, createUserIdAction } = phoneSlice.actions;
+export const { createSavePhoneAction, createSavePrefixAction, createUserIdAction, createUserReadingProgressAction } =
+    userInfoSlice.actions;
 
-export default phoneSlice.reducer;
+export default userInfoSlice.reducer;

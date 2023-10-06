@@ -44,6 +44,7 @@ export const authSlice = createSlice({
         builder.addCase(createSignUpAction.rejected, (state, action) => {
             state.signUp.isLoading = false;
             state.signUp.error = action.error;
+            console.log(state.signUp.error);
         });
         builder.addCase(createVerificationAction.pending, state => {
             console.log('request sent');
